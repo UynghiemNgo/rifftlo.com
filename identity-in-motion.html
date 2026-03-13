@@ -1,0 +1,1420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Identity in Motion — rifftlo.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+
+/* ============================================================
+   THEME — CSS CUSTOM PROPERTIES
+   Change :root to retheme the entire deck
+   ============================================================ */
+:root {
+  --bg:           #0d1219;
+  --bg-alt:       #0a1018;
+  --bg-panel:     #0c1520;
+  --text:         #d4e2f2;
+  --text-sec:     rgba(195,215,240,0.52);
+  --text-muted:   rgba(195,215,240,0.26);
+  --accent:       #7eb8f0;
+  --accent-dim:   rgba(99,149,210,0.38);
+  --accent-glow:  rgba(126,184,240,0.14);
+  --sep:          rgba(99,149,210,0.22);
+  --font-display: 'Newsreader', serif;
+  --font-body:    'Jost', sans-serif;
+  --ease:         cubic-bezier(0.16,1,0.3,1);
+}
+
+/* ============================================================
+   VIEWPORT BASE — mandatory, ensures slides fit 100vh
+   ============================================================ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+html, body { height:100%; overflow-x:hidden; }
+
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: var(--bg);
+}
+
+:root {
+  --title-size:  clamp(1.5rem,  5vw,   4rem);
+  --h2-size:     clamp(1.25rem, 3.5vw, 2.5rem);
+  --h3-size:     clamp(1rem,    2.5vw, 1.75rem);
+  --body-size:   clamp(0.75rem, 1.5vw, 1.125rem);
+  --small-size:  clamp(0.62rem, 1vw,   0.82rem);
+  --slide-pad:   clamp(1.5rem,  5vw,   4.5rem);
+  --gap:         clamp(0.5rem,  2vw,   2rem);
+  --gap-sm:      clamp(0.3rem,  1vw,   1rem);
+}
+
+@media (max-height:700px) {
+  :root {
+    --slide-pad: clamp(1rem, 3vw, 2.5rem);
+    --h2-size:   clamp(1rem, 3vw, 1.8rem);
+    --gap:       clamp(0.4rem, 1.5vw, 1.2rem);
+  }
+}
+@media (max-height:600px) {
+  :root {
+    --slide-pad:  clamp(0.5rem, 2.5vw, 1.5rem);
+    --body-size:  clamp(0.65rem, 1.2vw, 0.9rem);
+    --h2-size:    clamp(0.9rem, 2.5vw, 1.5rem);
+  }
+  .nav-dots, .keyboard-hint { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.2s  !important;
+  }
+}
+
+/* ============================================================
+   GLOBAL ELEMENTS
+   ============================================================ */
+
+/* Progress bar — top of page */
+.progress-bar {
+  position: fixed;
+  top: 0; left: 0;
+  height: 2px;
+  width: 0%;
+  background: var(--accent);
+  z-index: 100;
+  transition: width 0.4s var(--ease);
+  opacity: 0.7;
+}
+
+/* Vertical nav dots — right edge */
+.nav-dots {
+  position: fixed;
+  right: clamp(14px, 2.5vw, 28px);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sep);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+.nav-dot.active {
+  background: var(--accent);
+  transform: scale(1.5);
+}
+
+/* Slide meta — number + label (top of every content slide) */
+.slide-meta {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: var(--slide-pad) var(--slide-pad) 0;
+  flex-shrink: 0;
+}
+.slide-num {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  color: var(--accent-dim);
+  font-weight: 400;
+  letter-spacing: 0.12em;
+}
+.slide-label {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  color: var(--text-muted);
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.slide-meta-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--sep);
+  max-width: 40px;
+}
+
+/* ============================================================
+   REVEAL ANIMATIONS — triggered by .visible class via JS
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.slide.visible .reveal { opacity:1; transform:translateY(0); }
+
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: opacity 0.7s var(--ease), transform 0.7s var(--ease);
+}
+.slide.visible .reveal-left { opacity:1; transform:translateX(0); }
+
+/* Stagger */
+.d1 { transition-delay: 0.08s; }
+.d2 { transition-delay: 0.18s; }
+.d3 { transition-delay: 0.28s; }
+.d4 { transition-delay: 0.38s; }
+.d5 { transition-delay: 0.48s; }
+.d6 { transition-delay: 0.58s; }
+.d7 { transition-delay: 0.68s; }
+.d8 { transition-delay: 0.78s; }
+
+/* ============================================================
+   SLIDE 1 — COVER
+   Split panel: text left, arch motif right
+   ============================================================ */
+.slide-cover {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+.cover-left {
+  position: relative;
+  z-index: 2;
+  padding: var(--slide-pad);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--bg);
+}
+.cover-left::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent 0%, var(--accent-dim) 25%, var(--accent-dim) 75%, transparent 100%);
+}
+
+.cover-right {
+  position: relative;
+  background: var(--bg-alt);
+  overflow: hidden;
+}
+.cover-right::before {
+  content: '';
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse at 50% 50%, rgba(80,130,210,0.22) 0%, rgba(60,100,180,0.1) 40%, transparent 68%),
+    var(--bg-alt);
+}
+
+/* Arch doorway */
+.arch {
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  width: clamp(90px,18vw,180px);
+  height: clamp(126px,25vw,252px);
+  border: 1px solid rgba(99,149,210,0.28);
+  border-radius: 50% 50% 0 0 / 50% 50% 0 0;
+  animation: archPulse 5s ease-in-out infinite;
+}
+.arch-inner {
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  width: clamp(54px,11vw,108px);
+  height: clamp(76px,15vw,152px);
+  border: 1px solid rgba(99,149,210,0.14);
+  border-radius: 50% 50% 0 0 / 50% 50% 0 0;
+  animation: archPulse 5s 0.7s ease-in-out infinite;
+}
+.arch-dot {
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  width: 7px; height: 7px;
+  background: var(--accent); border-radius: 50%;
+  box-shadow: 0 0 18px rgba(126,184,240,0.85), 0 0 50px rgba(80,140,220,0.3);
+  animation: dotGlow 4s ease-in-out infinite;
+}
+.ring {
+  position: absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  border-radius: 50%;
+  border: 1px solid rgba(99,149,210,0.07);
+  animation: ringExpand 7s ease-out infinite;
+}
+.ring:nth-child(1) { width:40%; height:40%; animation-delay:0s; }
+.ring:nth-child(2) { width:65%; height:65%; animation-delay:2.2s; }
+.ring:nth-child(3) { width:90%; height:90%; animation-delay:4.4s; }
+
+@keyframes archPulse { 0%,100%{opacity:0.35} 50%{opacity:0.85} }
+@keyframes dotGlow   { 0%,100%{box-shadow:0 0 18px rgba(126,184,240,0.65)} 50%{box-shadow:0 0 34px rgba(126,184,240,0.95),0 0 75px rgba(80,140,220,0.45)} }
+@keyframes ringExpand { 0%{opacity:0.2;transform:translate(-50%,-50%) scale(0.93)} 100%{opacity:0;transform:translate(-50%,-50%) scale(1.08)} }
+
+.cover-top-meta {
+  display: flex; align-items: center; gap: 10px;
+}
+.cover-dot {
+  width: 4px; height: 4px;
+  background: var(--accent); border-radius: 50%; opacity: 0.7;
+}
+.cover-meta-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+.cover-heading {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(1rem,2vh,2rem) 0;
+}
+.cover-h1-a {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(2.6rem,5.8vw,5.4rem);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.0;
+  letter-spacing: 0.01em;
+}
+.cover-h1-b {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(2.6rem,5.8vw,5.4rem);
+  font-weight: 400;
+  font-style: italic;
+  color: var(--accent);
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  display: block;
+  margin-bottom: clamp(1.2rem,2.5vh,2rem);
+}
+.cover-divider {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: clamp(0.8rem,1.8vh,1.5rem);
+}
+.cover-divider-line { width:28px; height:1px; background: var(--accent-dim); }
+.cover-divider-text {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(99,149,210,0.6); font-weight: 400;
+}
+.cover-subtitle {
+  font-family: var(--font-body);
+  font-size: clamp(0.75rem,1.2vw,1rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.65;
+  max-width: 360px;
+}
+.cover-domain {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  color: var(--text-muted);
+  letter-spacing: 0.14em; text-transform: uppercase; font-weight: 300;
+}
+
+/* ============================================================
+   CONTENT SLIDES — shared layout
+   ============================================================ */
+.slide-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: clamp(0.8rem,2vh,1.8rem) var(--slide-pad) var(--slide-pad);
+  gap: var(--gap);
+}
+
+.slide h2 {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: var(--h2-size);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+}
+.slide h2 em {
+  font-style: italic;
+  color: var(--accent);
+  font-weight: 300;
+}
+
+.slide p, .slide li {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.65;
+}
+
+/* Accent intro line */
+.slide-intro {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(0.9rem,1.6vw,1.25rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  font-style: italic;
+  line-height: 1.5;
+  max-width: 640px;
+}
+
+/* Bullet list */
+.bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+.bullet-list li {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.bullet-list li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 5px; height: 5px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0.65;
+  margin-top: 0.1em;
+}
+
+/* Closing bar / accent quote */
+.accent-bar {
+  border-left: 2px solid var(--accent-dim);
+  padding-left: clamp(12px,1.5vw,20px);
+  margin-top: auto;
+}
+.accent-bar p {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(0.8rem,1.3vw,1.05rem);
+  font-style: italic;
+  color: var(--text-sec);
+  line-height: 1.5;
+}
+
+/* ============================================================
+   SLIDE 2 — THE PROBLEM — 2-column
+   ============================================================ */
+.problem-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  flex: 1;
+  max-height: min(55vh, 480px);
+}
+.problem-card {
+  background: rgba(99,149,210,0.06);
+  border: 1px solid var(--sep);
+  border-radius: 4px;
+  padding: clamp(0.8rem,2vw,1.4rem);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.problem-card-label {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 500;
+  opacity: 0.8;
+}
+.problem-card-text {
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem,1.2vw,0.95rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   SLIDE 3 — TRUST JOURNEY — centered editorial
+   ============================================================ */
+.trust-quote {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(1.4rem,3.2vw,2.6rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.25;
+  letter-spacing: 0.005em;
+  max-width: 760px;
+  padding-bottom: clamp(1rem,2.5vh,2rem);
+  border-bottom: 1px solid var(--sep);
+  margin-bottom: clamp(1rem,2.5vh,2rem);
+}
+.trust-quote em { color: var(--accent); font-style: italic; }
+
+.trust-steps {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+}
+
+/* ============================================================
+   SLIDE 4 — WHERE TRUST BREAKS
+   ============================================================ */
+.break-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--gap);
+  flex: 1;
+  align-items: start;
+  max-height: min(65vh, 550px);
+}
+.break-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 0;
+}
+.chain-node {
+  background: rgba(99,149,210,0.08);
+  border: 1px solid var(--sep);
+  border-radius: 4px;
+  padding: clamp(6px,1.2vw,10px) clamp(12px,2vw,20px);
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  color: var(--text-sec);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 400;
+  text-align: center;
+  width: clamp(110px,14vw,160px);
+}
+.chain-connector {
+  width: 1px;
+  height: clamp(10px,2vh,18px);
+  background: var(--sep);
+}
+.chain-break {
+  width: clamp(80px,10vw,120px);
+  height: 1px;
+  background: repeating-linear-gradient(90deg, rgba(200,80,60,0.6) 0, rgba(200,80,60,0.6) 6px, transparent 6px, transparent 12px);
+  margin: clamp(4px,1vh,8px) 0;
+  position: relative;
+}
+.chain-break::before {
+  content: 'BROKEN';
+  position: absolute;
+  top: -8px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-body);
+  font-size: 0.5rem;
+  letter-spacing: 0.15em;
+  color: rgba(200,80,60,0.6);
+}
+.chain-node.missing {
+  border-color: rgba(200,80,60,0.3);
+  color: rgba(200,80,60,0.5);
+}
+
+/* ============================================================
+   SLIDE 5 — THREE FEARS — 3 columns
+   ============================================================ */
+.fears-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  flex: 1;
+  max-height: min(62vh, 520px);
+}
+.fear-card {
+  background: rgba(99,149,210,0.05);
+  border: 1px solid var(--sep);
+  border-radius: 4px;
+  padding: clamp(1rem,2.5vw,1.8rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.5rem,1.2vh,1rem);
+  transition: border-color 0.3s ease;
+}
+.fear-card:hover { border-color: var(--accent-dim); }
+.fear-num {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(2rem,4vw,3.2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--accent);
+  opacity: 0.35;
+  line-height: 1;
+}
+.fear-title {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(1rem,2vw,1.5rem);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.2;
+}
+.fear-desc {
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem,1.1vw,0.9rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   SLIDE 6 — COMMUNITY ATTESTATION
+   ============================================================ */
+
+/* ============================================================
+   SLIDE 7 — TRUST PIPELINE — 3×2 grid
+   ============================================================ */
+.pipeline-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: clamp(0.4rem,1.2vw,0.8rem);
+  flex: 1;
+  max-height: min(62vh, 520px);
+}
+.pipeline-step {
+  background: rgba(99,149,210,0.05);
+  border: 1px solid var(--sep);
+  border-radius: 4px;
+  padding: clamp(0.7rem,1.8vw,1.2rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.35rem,0.8vh,0.6rem);
+  transition: border-color 0.3s ease;
+}
+.pipeline-step:hover { border-color: var(--accent-dim); }
+.step-num {
+  font-family: var(--font-body);
+  font-size: var(--small-size);
+  color: var(--accent);
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  opacity: 0.7;
+}
+.step-name {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(0.85rem,1.6vw,1.2rem);
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.2;
+}
+.step-desc {
+  font-family: var(--font-body);
+  font-size: clamp(0.65rem,1vw,0.82rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   SLIDE 8 — SOVEREIGN IDENTITY — 2×2 grid
+   ============================================================ */
+.sovereign-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap);
+  flex: 1;
+  max-height: min(56vh, 480px);
+}
+.sovereign-card {
+  border-top: 1px solid var(--sep);
+  padding-top: clamp(0.8rem,1.8vh,1.4rem);
+  display: flex;
+  flex-direction: column;
+  gap: clamp(0.4rem,0.9vh,0.7rem);
+}
+.sovereign-title {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(0.95rem,1.8vw,1.3rem);
+  font-weight: 300;
+  color: var(--accent);
+  line-height: 1.2;
+  font-style: italic;
+}
+.sovereign-body {
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem,1.1vw,0.9rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   SLIDE 9 — CONCLUSION — quote slide
+   ============================================================ */
+.conclusion-quote {
+  font-family: var(--font-display);
+  font-optical-sizing: auto;
+  font-size: clamp(1.2rem,2.6vw,2rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  line-height: 1.35;
+  letter-spacing: 0.005em;
+  max-width: 780px;
+  padding-left: clamp(16px,2vw,28px);
+  border-left: 2px solid var(--accent-dim);
+  margin-bottom: clamp(1.5rem,3vh,2.5rem);
+}
+.conclusion-body {
+  font-family: var(--font-body);
+  font-size: clamp(0.78rem,1.3vw,1rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.65;
+  max-width: 680px;
+  margin-bottom: clamp(1.5rem,3vh,2.5rem);
+}
+.conclusion-domain {
+  font-family: var(--font-body);
+  font-size: clamp(0.7rem,1vw,0.85rem);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 400;
+  opacity: 0.6;
+}
+
+/* ============================================================
+   PHOTO SPLIT LAYOUT — slides with photo on right panel
+   ============================================================ */
+.slide-split {
+  display: grid !important;
+  grid-template-columns: 3fr 2fr;
+  flex-direction: unset;
+}
+.split-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.split-content::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent 0%, var(--accent-dim) 25%, var(--accent-dim) 75%, transparent 100%);
+}
+.split-photo {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-alt);
+  flex-shrink: 0;
+}
+.split-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.5;
+  filter: grayscale(15%) brightness(0.65);
+  max-height: none;
+}
+/* Left-edge fade so photo blends into text panel */
+.split-photo::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, var(--bg) 0%, transparent 35%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Cover right-panel photo */
+.cover-photo {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  object-fit: cover;
+  opacity: 0.13;
+  filter: grayscale(30%) brightness(0.6);
+  z-index: 0;
+}
+
+/* ============================================================
+   CARD ICONS — small icon blocks inside cards
+   ============================================================ */
+.card-icon {
+  width: clamp(28px, 3vw, 38px);
+  height: clamp(28px, 3vw, 38px);
+  background: rgba(126,184,240,0.09);
+  border: 1px solid rgba(126,184,240,0.15);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.72rem, 1.2vw, 0.95rem);
+  color: var(--accent);
+  flex-shrink: 0;
+  margin-bottom: 4px;
+}
+
+/* ============================================================
+   CONTACT BUTTON
+   ============================================================ */
+.contact-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: clamp(10px,1.5vh,15px) clamp(20px,2.5vw,30px);
+  background: transparent;
+  border: 1px solid var(--accent-dim);
+  color: var(--accent);
+  font-family: var(--font-body);
+  font-size: clamp(0.72rem,1.1vw,0.9rem);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  text-decoration: none;
+  border-radius: 3px;
+  transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+.contact-btn:hover {
+  background: rgba(126,184,240,0.1);
+  border-color: var(--accent);
+  color: var(--text);
+}
+.contact-btn i { font-size: 0.88em; opacity: 0.85; }
+
+/* ============================================================
+   SLIDE 2 — JOURNEY FLOW (icon path, line-art style)
+   ============================================================ */
+:root { --icon-sz: clamp(50px, 5.5vw, 66px); }
+
+.journey-flow {
+  display: flex;
+  align-items: flex-start;
+  flex: 1;
+  padding-top: clamp(0.4rem, 1.5vh, 1.2rem);
+  max-height: min(54vh, 460px);
+}
+.journey-node {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(0.4rem, 0.8vh, 0.65rem);
+}
+.journey-icon-wrap {
+  width: var(--icon-sz);
+  height: var(--icon-sz);
+  border: 1px solid var(--accent-dim);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(1rem, 1.8vw, 1.3rem);
+  color: var(--accent);
+  background: rgba(126,184,240,0.04);
+  flex-shrink: 0;
+  transition: border-color 0.3s, background 0.3s;
+}
+.journey-icon-wrap:hover {
+  border-color: var(--accent);
+  background: rgba(126,184,240,0.09);
+}
+/* Dashed connector line, vertically centered to icon midpoint */
+.journey-conn {
+  width: clamp(16px, 3.5vw, 44px);
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    rgba(99,149,210,0.45) 0, rgba(99,149,210,0.45) 5px,
+    transparent 5px, transparent 10px
+  );
+  align-self: flex-start;
+  margin-top: calc(var(--icon-sz) / 2);
+  flex-shrink: 0;
+}
+.journey-label {
+  font-family: var(--font-body);
+  font-size: clamp(0.56rem, 0.88vw, 0.7rem);
+  color: var(--accent);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 500;
+}
+.journey-desc {
+  font-family: var(--font-body);
+  font-size: clamp(0.56rem, 0.82vw, 0.68rem);
+  color: var(--text-muted);
+  text-align: center;
+  line-height: 1.42;
+  max-width: clamp(80px, 10vw, 125px);
+  font-weight: 300;
+}
+
+/* ============================================================
+   SLIDE 6 — NETWORK PANEL (CSS + SVG attestation network)
+   ============================================================ */
+.slide-network {
+  display: grid !important;
+  grid-template-columns: 58fr 42fr;
+  flex-direction: unset;
+}
+.network-content {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+}
+.network-content::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; width: 1px;
+  background: linear-gradient(180deg, transparent 0%, var(--accent-dim) 25%, var(--accent-dim) 75%, transparent 100%);
+}
+.network-panel {
+  position: relative;
+  overflow: hidden;
+  background: var(--bg-alt);
+}
+/* SVG fills the panel for line drawing */
+.net-lines {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+/* Each node: absolutely positioned, centred via transform */
+.net-node {
+  position: absolute;
+  width: clamp(30px, 3.2vw, 42px);
+  height: clamp(30px, 3.2vw, 42px);
+  border-radius: 50%;
+  border: 1px solid var(--accent-dim);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.65rem, 1.1vw, 0.85rem);
+  color: var(--accent);
+  background: rgba(126,184,240,0.05);
+  transform: translate(-50%, -50%);
+  transition: border-color 0.3s;
+  z-index: 2;
+}
+.net-node.central {
+  width: clamp(40px, 4.2vw, 54px);
+  height: clamp(40px, 4.2vw, 54px);
+  border-color: var(--accent);
+  background: rgba(126,184,240,0.12);
+  font-size: clamp(0.85rem, 1.5vw, 1.05rem);
+  box-shadow: 0 0 22px rgba(126,184,240,0.18);
+}
+.net-label {
+  position: absolute;
+  font-family: var(--font-body);
+  font-size: clamp(0.48rem, 0.7vw, 0.58rem);
+  color: var(--text-muted);
+  text-align: center;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  transform: translateX(-50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+</style>
+</head>
+<body>
+
+<!-- Progress bar -->
+<div class="progress-bar" id="progressBar"></div>
+
+<!-- Nav dots (populated by JS) -->
+<nav class="nav-dots" id="navDots" aria-label="Slide navigation"></nav>
+
+<!-- ============================================================
+     SLIDE 1 — COVER
+     ============================================================ -->
+<section class="slide slide-cover" data-label="Cover">
+  <div class="cover-left">
+    <div class="cover-top-meta reveal d1">
+      <div class="cover-dot"></div>
+      <span class="cover-meta-text">Pre-Civil Registration Infrastructure</span>
+    </div>
+    <div class="cover-heading">
+      <div class="cover-h1-a reveal d2">Identity</div>
+      <div class="cover-h1-b reveal d3">in Motion</div>
+      <div class="cover-divider reveal d4">
+        <div class="cover-divider-line"></div>
+        <span class="cover-divider-text">rifftlo.com</span>
+      </div>
+      <p class="cover-subtitle reveal d5">
+        Building trust pipelines and workflows for unidentified individuals
+      </p>
+    </div>
+    <div class="cover-domain reveal d6">rifftlo.com</div>
+  </div>
+  <div class="cover-right">
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="ring"></div>
+    <div class="arch"></div>
+    <div class="arch-inner"></div>
+    <div class="arch-dot"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 2 — THE PROBLEM
+     ============================================================ -->
+<section class="slide" data-label="The Problem">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">01</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">The Problem</span>
+  </div>
+  <div class="slide-inner">
+    <h2 class="reveal d2">Millions exist outside<br><em>formal identity systems</em></h2>
+    <p class="slide-intro reveal d3">Without identity, people cannot access:</p>
+    <div class="journey-flow">
+      <div class="journey-node reveal d4">
+        <div class="journey-icon-wrap"><i class="fa-solid fa-building-columns"></i></div>
+        <span class="journey-label">Banking</span>
+        <p class="journey-desc">No accounts, no credit, no participation</p>
+      </div>
+      <div class="journey-conn reveal d4"></div>
+      <div class="journey-node reveal d5">
+        <div class="journey-icon-wrap"><i class="fa-solid fa-house"></i></div>
+        <span class="journey-label">Land Rights</span>
+        <p class="journey-desc">No legal claim to home or inheritance</p>
+      </div>
+      <div class="journey-conn reveal d5"></div>
+      <div class="journey-node reveal d6">
+        <div class="journey-icon-wrap"><i class="fa-solid fa-heart-pulse"></i></div>
+        <span class="journey-label">Healthcare</span>
+        <p class="journey-desc">No access to health or social protection</p>
+      </div>
+      <div class="journey-conn reveal d6"></div>
+      <div class="journey-node reveal d7">
+        <div class="journey-icon-wrap"><i class="fa-solid fa-landmark"></i></div>
+        <span class="journey-label">Government</span>
+        <p class="journey-desc">Excluded from aid and development programs</p>
+      </div>
+    </div>
+    <div class="accent-bar reveal d8">
+      <p>Identity is the gateway to participation in modern economic and civic life.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 3 — IDENTITY IS A TRUST JOURNEY
+     ============================================================ -->
+<section class="slide" data-label="Trust Journey">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">02</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">Identity is a Trust Journey</span>
+  </div>
+  <div class="slide-inner">
+    <div class="trust-quote reveal d2">
+      "Trust is not granted instantly.<br>
+      It is built carefully, <em>step by step</em>."
+    </div>
+    <ul class="bullet-list trust-steps">
+      <li class="reveal d3">No single document creates identity — it is a process, not a certificate.</li>
+      <li class="reveal d4">Identity accumulates through presence, community recognition, and confirmation over time.</li>
+      <li class="reveal d5">Trust in identity becomes the currency that enables participation in every modern system.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 4 — WHERE TRUST BREAKS
+     ============================================================ -->
+<section class="slide" data-label="Where Trust Breaks">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">03</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">Where Trust Breaks</span>
+  </div>
+  <div class="slide-inner">
+    <h2 class="reveal d2">The chain breaks<br><em>at the evidence stage</em></h2>
+    <div class="break-layout">
+      <div>
+        <p class="slide-intro reveal d3" style="margin-bottom:var(--gap)">Most systems require birth certificates, passports, or national IDs to begin.</p>
+        <ul class="bullet-list">
+          <li class="reveal d4">Documents may never have been issued to last-mile communities</li>
+          <li class="reveal d5">May have been lost in displacement, conflict, or disaster</li>
+          <li class="reveal d6">Or may never have existed at all</li>
+        </ul>
+        <div class="accent-bar reveal d7" style="margin-top:var(--gap)">
+          <p>When documentation is missing, the chain cannot begin.</p>
+        </div>
+      </div>
+      <div class="break-visual reveal d3">
+        <div class="chain-node">Access</div>
+        <div class="chain-connector"></div>
+        <div class="chain-node">National ID</div>
+        <div class="chain-connector"></div>
+        <div class="chain-node">Documents</div>
+        <div class="chain-break"></div>
+        <div class="chain-node missing">Evidence?</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 5 — THE THREE FEARS
+     ============================================================ -->
+<section class="slide" data-label="The Three Fears">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">04</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">The Three Fears</span>
+  </div>
+  <div class="slide-inner">
+    <h2 class="reveal d2">Why communities<br><em>resist formal registration</em></h2>
+    <div class="fears-grid">
+      <div class="fear-card reveal d3">
+        <div class="card-icon"><i class="fa-solid fa-user-minus"></i></div>
+        <div class="fear-num">01</div>
+        <div class="fear-title">Misidentification</div>
+        <p class="fear-desc">Incorrect names, dates, and relationships recorded permanently into systems that are hard to correct.</p>
+      </div>
+      <div class="fear-card reveal d4">
+        <div class="card-icon"><i class="fa-solid fa-unlock"></i></div>
+        <div class="fear-num">02</div>
+        <div class="fear-title">Loss of Control</div>
+        <p class="fear-desc">Data misuse, identity theft, and exploitation by state or corporate actors after registration.</p>
+      </div>
+      <div class="fear-card reveal d5">
+        <div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="fear-num">03</div>
+        <div class="fear-title">Institutional Mistrust</div>
+        <p class="fear-desc">Historical negative experiences with government programs, colonial records, and external organisations.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 6 — COMMUNITY ATTESTATION
+     ============================================================ -->
+<section class="slide slide-network" data-label="Community Attestation">
+  <div class="network-content">
+    <div class="slide-meta reveal d1">
+      <span class="slide-num">05</span>
+      <div class="slide-meta-rule"></div>
+      <span class="slide-label">Community Attestation</span>
+    </div>
+    <div class="slide-inner">
+      <h2 class="reveal d2">In every community,<br><em>people already know each other</em></h2>
+      <p class="slide-intro reveal d3">Social recognition already exists. The pipeline converts it into verifiable evidence.</p>
+      <ul class="bullet-list">
+        <li class="reveal d4">Neighbours, elders, and family members can attest to identity</li>
+        <li class="reveal d5">Each attestation adds a layer of confidence to the identity record</li>
+        <li class="reveal d6">Multiple attestations create a robust confidence network</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Network visualisation: 1 central node + 6 satellite nodes, connected by SVG lines -->
+  <div class="network-panel">
+    <svg class="net-lines" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <!-- Lines from central (50%, 50%) to each satellite -->
+      <line x1="50%" y1="50%" x2="50%"  y2="14%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50%" y1="50%" x2="82%"  y2="29%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50%" y1="50%" x2="84%"  y2="68%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50%" y1="50%" x2="50%"  y2="86%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50%" y1="50%" x2="16%"  y2="68%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <line x1="50%" y1="50%" x2="18%"  y2="29%" stroke="rgba(99,149,210,0.28)" stroke-width="1" stroke-dasharray="4,4"/>
+      <!-- Outer ring connections between satellites (faint) -->
+      <line x1="50%"  y1="14%" x2="82%"  y2="29%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+      <line x1="82%"  y1="29%" x2="84%"  y2="68%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+      <line x1="84%"  y1="68%" x2="50%"  y2="86%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+      <line x1="50%"  y1="86%" x2="16%"  y2="68%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+      <line x1="16%"  y1="68%" x2="18%"  y2="29%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+      <line x1="18%"  y1="29%" x2="50%"  y2="14%" stroke="rgba(99,149,210,0.1)" stroke-width="1"/>
+    </svg>
+
+    <!-- Central node: the individual being identified -->
+    <div class="net-node central" style="left:50%;top:50%"><i class="fa-solid fa-person"></i></div>
+
+    <!-- Satellite nodes: community attesters -->
+    <div class="net-node" style="left:50%;top:14%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:82%;top:29%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:84%;top:68%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:50%;top:86%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:16%;top:68%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:18%;top:29%"><i class="fa-solid fa-user"></i></div>
+
+    <!-- Labels -->
+    <div class="net-label" style="left:50%;top:5%">Neighbour</div>
+    <div class="net-label" style="left:88%;top:20%">Elder</div>
+    <div class="net-label" style="left:90%;top:72%">Family</div>
+    <div class="net-label" style="left:50%;top:91%">Leader</div>
+    <div class="net-label" style="left:10%;top:72%">Official</div>
+    <div class="net-label" style="left:12%;top:20%">Witness</div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 7 — THE TRUST PIPELINE
+     ============================================================ -->
+<section class="slide" data-label="The Trust Pipeline">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">06</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">The Trust Pipeline</span>
+  </div>
+  <div class="slide-inner">
+    <h2 class="reveal d2">Six steps from <em>presence to inclusion</em></h2>
+    <div class="pipeline-grid">
+      <div class="pipeline-step reveal d3">
+        <div class="card-icon"><i class="fa-solid fa-person"></i></div>
+        <span class="step-num">Step 01</span>
+        <div class="step-name">Human Presence</div>
+        <p class="step-desc">The person comes first, before any document or credential.</p>
+      </div>
+      <div class="pipeline-step reveal d4">
+        <div class="card-icon"><i class="fa-solid fa-fingerprint"></i></div>
+        <span class="step-num">Step 02</span>
+        <div class="step-name">Biometric &amp; Voice Capture</div>
+        <p class="step-desc">Offline, non-invasive, held with full consent by the individual.</p>
+      </div>
+      <div class="pipeline-step reveal d5">
+        <div class="card-icon"><i class="fa-solid fa-people-group"></i></div>
+        <span class="step-num">Step 03</span>
+        <div class="step-name">Community Attestation</div>
+        <p class="step-desc">Social recognition is converted into verifiable, signed evidence.</p>
+      </div>
+      <div class="pipeline-step reveal d6">
+        <div class="card-icon"><i class="fa-solid fa-chart-bar"></i></div>
+        <span class="step-num">Step 04</span>
+        <div class="step-name">Identity Confidence Score</div>
+        <p class="step-desc">Trust is measured and weighted — not assumed or imposed.</p>
+      </div>
+      <div class="pipeline-step reveal d7">
+        <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
+        <span class="step-num">Step 05</span>
+        <div class="step-name">Institutional Recognition</div>
+        <p class="step-desc">The first door opens — banking, healthcare, land registration.</p>
+      </div>
+      <div class="pipeline-step reveal d8">
+        <div class="card-icon"><i class="fa-solid fa-id-card"></i></div>
+        <span class="step-num">Step 06</span>
+        <div class="step-name">National ID Integration</div>
+        <p class="step-desc">The transition to formal systems becomes seamless and invisible.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 8 — SOVEREIGN IDENTITY PRINCIPLES
+     ============================================================ -->
+<section class="slide" data-label="Sovereign Identity">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">07</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">Sovereign Identity Principles</span>
+  </div>
+  <div class="slide-inner">
+    <h2 class="reveal d2"><em>Identity belongs</em><br>to the individual</h2>
+    <div class="sovereign-grid">
+      <div class="sovereign-card reveal d3">
+        <div class="card-icon"><i class="fa-solid fa-key"></i></div>
+        <div class="sovereign-title">Issued but held</div>
+        <p class="sovereign-body">Credentials are issued by trusted authorities but held by the user — not stored in a central repository owned by an institution.</p>
+      </div>
+      <div class="sovereign-card reveal d4">
+        <div class="card-icon"><i class="fa-solid fa-hand"></i></div>
+        <div class="sovereign-title">User-controlled sharing</div>
+        <p class="sovereign-body">Users decide when, how, and with whom they share their identity. Consent is not a formality — it is architecture.</p>
+      </div>
+      <div class="sovereign-card reveal d5">
+        <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="sovereign-title">Technology as record</div>
+        <p class="sovereign-body">Technology records and strengthens trust. It does not create trust, and it must not replace it.</p>
+      </div>
+      <div class="sovereign-card reveal d6">
+        <div class="card-icon"><i class="fa-solid fa-handshake"></i></div>
+        <div class="sovereign-title">Human trust first</div>
+        <p class="sovereign-body">The system begins and ends with human relationships. The pipeline is a bridge — community is the foundation.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 9 — CONCLUSION
+     ============================================================ -->
+<section class="slide" data-label="Conclusion">
+  <div class="slide-meta reveal d1">
+    <span class="slide-num">08</span>
+    <div class="slide-meta-rule"></div>
+    <span class="slide-label">Conclusion</span>
+  </div>
+  <div class="slide-inner">
+    <blockquote class="conclusion-quote reveal d2">
+      "Identity is not simply a document or database entry.
+      Identity is a structure of trust that enables individuals
+      to participate in modern systems."
+    </blockquote>
+    <p class="conclusion-body reveal d3">
+      The Pre-Civil Registration Confidence Infrastructure transforms identity
+      from a rigid gatekeeping mechanism into a progressive bridge toward inclusion —
+      meeting individuals where they are, and building from there.
+    </p>
+    <div class="conclusion-domain reveal d4">rifftlo.com</div>
+    <a class="contact-btn reveal d5" href="mailto:uynghiem@omtse.com">
+      <i class="fa-solid fa-envelope"></i>
+      Contact us to learn more — uynghiem@omtse.com
+    </a>
+  </div>
+</section>
+
+<script>
+/* ============================================================
+   SLIDE PRESENTATION CONTROLLER
+   ============================================================ */
+class SlidePresentation {
+  constructor() {
+    this.slides     = Array.from(document.querySelectorAll('.slide'));
+    this.current    = 0;
+    this.isScrolling = false;
+
+    this.setupProgressBar();
+    this.setupNavDots();
+    this.setupIntersectionObserver();
+    this.setupKeyboard();
+    this.setupTouch();
+    this.setupWheel();
+  }
+
+  /* --- Progress bar --- */
+  setupProgressBar() {
+    this.bar = document.getElementById('progressBar');
+    this.updateProgress();
+  }
+
+  updateProgress() {
+    const pct = this.slides.length > 1
+      ? (this.current / (this.slides.length - 1)) * 100
+      : 0;
+    this.bar.style.width = pct + '%';
+  }
+
+  /* --- Nav dots --- */
+  setupNavDots() {
+    const nav = document.getElementById('navDots');
+    this.slides.forEach((slide, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'nav-dot' + (i === 0 ? ' active' : '');
+      btn.setAttribute('aria-label', slide.dataset.label || `Slide ${i + 1}`);
+      btn.addEventListener('click', () => this.goTo(i));
+      nav.appendChild(btn);
+    });
+    this.dots = Array.from(nav.querySelectorAll('.nav-dot'));
+  }
+
+  updateDots() {
+    this.dots.forEach((d, i) => d.classList.toggle('active', i === this.current));
+  }
+
+  /* --- Intersection Observer for .reveal animations --- */
+  setupIntersectionObserver() {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        entry.target.classList.toggle('visible', entry.isIntersecting);
+        if (entry.isIntersecting) {
+          this.current = this.slides.indexOf(entry.target);
+          this.updateProgress();
+          this.updateDots();
+        }
+      });
+    }, { threshold: 0.5 });
+
+    this.slides.forEach(s => observer.observe(s));
+  }
+
+  /* --- Navigation --- */
+  goTo(index) {
+    const i = Math.max(0, Math.min(this.slides.length - 1, index));
+    this.slides[i].scrollIntoView({ behavior: 'smooth' });
+    this.current = i;
+    this.updateProgress();
+    this.updateDots();
+  }
+
+  next() { this.goTo(this.current + 1); }
+  prev() { this.goTo(this.current - 1); }
+
+  /* --- Keyboard --- */
+  setupKeyboard() {
+    document.addEventListener('keydown', e => {
+      switch(e.key) {
+        case 'ArrowDown': case 'ArrowRight': case ' ':
+          e.preventDefault(); this.next(); break;
+        case 'ArrowUp': case 'ArrowLeft':
+          e.preventDefault(); this.prev(); break;
+        case 'Home': e.preventDefault(); this.goTo(0); break;
+        case 'End':  e.preventDefault(); this.goTo(this.slides.length - 1); break;
+      }
+    });
+  }
+
+  /* --- Touch/swipe --- */
+  setupTouch() {
+    let startY = 0, startX = 0;
+    document.addEventListener('touchstart', e => {
+      startY = e.touches[0].clientY;
+      startX = e.touches[0].clientX;
+    }, { passive: true });
+    document.addEventListener('touchend', e => {
+      const dy = startY - e.changedTouches[0].clientY;
+      const dx = startX - e.changedTouches[0].clientX;
+      if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40) {
+        dy > 0 ? this.next() : this.prev();
+      }
+    }, { passive: true });
+  }
+
+  /* --- Mouse wheel (throttled) --- */
+  setupWheel() {
+    let last = 0;
+    document.addEventListener('wheel', e => {
+      const now = Date.now();
+      if (now - last < 800) return;
+      last = now;
+      e.deltaY > 0 ? this.next() : this.prev();
+    }, { passive: true });
+  }
+}
+
+new SlidePresentation();
+</script>
+</body>
+</html>

@@ -942,6 +942,163 @@ html {
   pointer-events: none;
 }
 
+/* ============================================================
+   SLIDE DEMO — Live Demo with email gate
+   ============================================================ */
+.slide-demo {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.demo-header {
+  display: flex;
+  align-items: center;
+  gap: clamp(0.75rem, 2vw, 2rem);
+  padding: clamp(0.6rem, 1.2vh, 1rem) var(--slide-pad);
+  flex-shrink: 0;
+  border-bottom: 1px solid var(--sep);
+}
+.demo-heading {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.4rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  flex: 1;
+}
+.demo-fullscreen-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: clamp(0.62rem, 0.9vw, 0.78rem);
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--accent);
+  text-decoration: none;
+  border: 1px solid var(--accent-dim);
+  padding: 6px 14px;
+  border-radius: 4px;
+  transition: background 0.25s, border-color 0.25s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.demo-fullscreen-btn:hover {
+  background: rgba(126,184,240,0.08);
+  border-color: var(--accent);
+}
+.demo-frame-wrap {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin: clamp(0.4rem, 0.8vh, 0.8rem) var(--slide-pad) clamp(0.4rem, 0.8vh, 0.8rem);
+  border-radius: 12px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.45), 0 1px 4px rgba(0,0,0,0.3);
+}
+.demo-frame-wrap iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: 12px;
+  display: block;
+}
+
+/* Email gate overlay */
+.demo-gate {
+  position: absolute;
+  inset: 0;
+  background: rgba(13,18,25,0.93);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  border-radius: 12px;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
+}
+.demo-gate.unlocked {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.gate-card {
+  text-align: center;
+  max-width: 400px;
+  padding: clamp(1.5rem, 3vw, 2.5rem);
+}
+.gate-icon {
+  font-size: 1.8rem;
+  color: var(--accent);
+  margin-bottom: 1.1rem;
+  opacity: 0.75;
+}
+.gate-card h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1.25rem, 2.2vw, 1.75rem);
+  font-weight: 300;
+  font-style: italic;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.gate-card p {
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  color: var(--text-sec);
+  margin-bottom: 1.5rem;
+  font-weight: 300;
+  line-height: 1.5;
+}
+.gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.gate-input {
+  width: 100%;
+  padding: 11px 16px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--accent-dim);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  outline: none;
+  transition: border-color 0.25s;
+}
+.gate-input::placeholder { color: var(--text-muted); }
+.gate-input:focus { border-color: var(--accent); }
+.gate-submit {
+  width: 100%;
+  padding: 11px 16px;
+  background: var(--accent);
+  color: #0d1219;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: var(--body-size);
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  transition: opacity 0.2s;
+}
+.gate-submit:hover { opacity: 0.88; }
+.gate-submit:disabled { opacity: 0.5; cursor: default; }
+.gate-note {
+  font-family: var(--font-body);
+  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+.gate-error {
+  color: #e08080;
+  font-family: var(--font-body);
+  font-size: clamp(0.62rem, 0.9vw, 0.75rem);
+  display: none;
+  margin-top: 4px;
+}
+
 </style>
 </head>
 <body>
@@ -1269,11 +1426,60 @@ html {
 </section>
 
 <!-- ============================================================
-     SLIDE 9 — CONCLUSION
+     SLIDE 9 — LIVE DEMO
+     ============================================================ -->
+<section class="slide slide-demo" data-label="Live Demo">
+  <div class="demo-header">
+    <div class="slide-meta reveal d1" style="padding:0;flex-shrink:0;">
+      <span class="slide-num">08</span>
+      <div class="slide-meta-rule"></div>
+      <span class="slide-label">Live Demo</span>
+    </div>
+    <h2 class="demo-heading reveal d2">Live Demo — <em>PCRCI Prototype</em></h2>
+    <a class="demo-fullscreen-btn reveal d3" href="pcrci_prototype.html" target="_blank" rel="noopener">
+      <i class="fa-solid fa-up-right-from-square"></i> View Fullscreen
+    </a>
+  </div>
+  <div class="demo-frame-wrap">
+    <!-- Email gate — enter email to unlock prototype -->
+    <div class="demo-gate" id="demoGate">
+      <div class="gate-card">
+        <div class="gate-icon"><i class="fa-solid fa-lock"></i></div>
+        <h3>Access the Interactive Prototype</h3>
+        <p>Enter your email to unlock the live PCRCI demo.</p>
+        <form class="gate-form" id="gateForm">
+          <input
+            class="gate-input"
+            id="gateEmail"
+            type="email"
+            name="email"
+            placeholder="your@email.com"
+            required
+            autocomplete="email"
+          />
+          <button class="gate-submit" type="submit" id="gateSubmit">
+            Unlock Demo &rarr;
+          </button>
+          <div class="gate-error" id="gateError">Something went wrong. Please try again.</div>
+          <p class="gate-note">No spam. Used only to track demo access.</p>
+        </form>
+      </div>
+    </div>
+    <iframe
+      src="pcrci_prototype.html"
+      title="PCRCI Interactive Prototype"
+      loading="lazy"
+      sandbox="allow-scripts allow-same-origin allow-forms"
+    ></iframe>
+  </div>
+</section>
+
+<!-- ============================================================
+     SLIDE 10 — CONCLUSION
      ============================================================ -->
 <section class="slide" data-label="Conclusion">
   <div class="slide-meta reveal d1">
-    <span class="slide-num">08</span>
+    <span class="slide-num">09</span>
     <div class="slide-meta-rule"></div>
     <span class="slide-label">Conclusion</span>
   </div>
@@ -1415,6 +1621,56 @@ class SlidePresentation {
 }
 
 new SlidePresentation();
+
+/* ============================================================
+   EMAIL GATE — submit to Formspree, then reveal iframe
+   Replace YOUR_FORM_ID with your Formspree form ID
+   Sign up free at https://formspree.io
+   ============================================================ */
+(function() {
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xojklybb';
+  const gate     = document.getElementById('demoGate');
+  const form     = document.getElementById('gateForm');
+  const emailEl  = document.getElementById('gateEmail');
+  const submitEl = document.getElementById('gateSubmit');
+  const errorEl  = document.getElementById('gateError');
+
+  if (!gate || !form) return;
+
+  // If already unlocked in this session, skip gate
+  if (sessionStorage.getItem('demoUnlocked') === '1') {
+    gate.classList.add('unlocked');
+  }
+
+  form.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const email = emailEl.value.trim();
+    if (!email) return;
+
+    submitEl.disabled = true;
+    submitEl.textContent = 'Submitting…';
+    errorEl.style.display = 'none';
+
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+
+      if (res.ok) {
+        sessionStorage.setItem('demoUnlocked', '1');
+        gate.classList.add('unlocked');
+      } else {
+        throw new Error('bad response');
+      }
+    } catch (_) {
+      errorEl.style.display = 'block';
+      submitEl.disabled = false;
+      submitEl.textContent = 'Unlock Demo →';
+    }
+  });
+})();
 </script>
 </body>
 </html>

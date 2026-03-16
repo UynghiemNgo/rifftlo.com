@@ -37,7 +37,6 @@
 html, body { height:100%; overflow-x:hidden; }
 
 html {
-  scroll-snap-type: y mandatory;
   scroll-behavior: smooth;
 }
 
@@ -46,7 +45,6 @@ html {
   height: 100vh;
   height: 100dvh;
   overflow: hidden;
-  scroll-snap-align: start;
   display: flex;
   flex-direction: column;
   position: relative;
@@ -1555,7 +1553,7 @@ class SlidePresentation {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         entry.target.classList.toggle('visible', entry.isIntersecting);
-        if (entry.isIntersecting) {
+        if (entry.isIntersecting && !this.isScrolling) {
           this.current = this.slides.indexOf(entry.target);
           this.updateProgress();
           this.updateDots();
@@ -1569,14 +1567,19 @@ class SlidePresentation {
   /* --- Navigation --- */
   goTo(index) {
     const i = Math.max(0, Math.min(this.slides.length - 1, index));
-    this.slides[i].scrollIntoView({ behavior: 'smooth' });
+    if (i === this.current && this.isScrolling) return;
+    this.isScrolling = true;
     this.current = i;
+    this.slides[i].scrollIntoView({ behavior: 'smooth' });
     this.updateProgress();
     this.updateDots();
+    // Release lock after scroll animation completes
+    clearTimeout(this._scrollTimer);
+    this._scrollTimer = setTimeout(() => { this.isScrolling = false; }, 700);
   }
 
-  next() { this.goTo(this.current + 1); }
-  prev() { this.goTo(this.current - 1); }
+  next() { if (!this.isScrolling) this.goTo(this.current + 1); }
+  prev() { if (!this.isScrolling) this.goTo(this.current - 1); }
 
   /* --- Keyboard --- */
   setupKeyboard() {
@@ -1600,6 +1603,7 @@ class SlidePresentation {
       startX = e.touches[0].clientX;
     }, { passive: true });
     document.addEventListener('touchend', e => {
+      if (this.isScrolling) return;
       const dy = startY - e.changedTouches[0].clientY;
       const dx = startX - e.changedTouches[0].clientX;
       if (Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 40) {
@@ -1610,13 +1614,11 @@ class SlidePresentation {
 
   /* --- Mouse wheel (throttled) --- */
   setupWheel() {
-    let last = 0;
     document.addEventListener('wheel', e => {
-      const now = Date.now();
-      if (now - last < 800) return;
-      last = now;
+      e.preventDefault();
+      if (this.isScrolling) return;
       e.deltaY > 0 ? this.next() : this.prev();
-    }, { passive: true });
+    }, { passive: false });
   }
 }
 

@@ -1659,6 +1659,12 @@ class SlidePresentation {
     this.setupKeyboard();
     this.setupTouch();
     this.setupWheel();
+
+    // Release scroll lock when browser finishes scrolling (more reliable than timeout alone)
+    document.addEventListener('scrollend', () => {
+      clearTimeout(this._scrollTimer);
+      this.isScrolling = false;
+    });
   }
 
   /* --- Progress bar --- */
@@ -1702,7 +1708,7 @@ class SlidePresentation {
           this.updateDots();
         }
       });
-    }, { threshold: 0.5 });
+    }, { threshold: 0.2 });
 
     this.slides.forEach(s => observer.observe(s));
   }
@@ -1718,7 +1724,7 @@ class SlidePresentation {
     this.updateDots();
     // Release lock after scroll animation completes
     clearTimeout(this._scrollTimer);
-    this._scrollTimer = setTimeout(() => { this.isScrolling = false; }, 700);
+    this._scrollTimer = setTimeout(() => { this.isScrolling = false; }, 1000);
   }
 
   next() { if (!this.isScrolling) this.goTo(this.current + 1); }

@@ -1151,13 +1151,18 @@ html {
     grid-template-columns: 1fr 1fr;
   }
 
-  /* Journey flow — wrap on smaller screens */
+  /* Journey flow — 2×2 grid on tablet */
   .journey-flow {
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gap);
     max-height: none;
   }
   .journey-conn { display: none; }
+  .journey-node { align-items: center; }
+  .journey-label { font-size: 0.75rem; }
+  .journey-desc { font-size: 0.7rem; max-width: none; }
+  .journey-icon-wrap { font-size: 1.1rem; }
 
   /* Nav dots — smaller & closer to edge */
   .nav-dots { right: 8px; }
@@ -1196,15 +1201,15 @@ html {
   }
   .break-visual { order: -1; max-height: 25vh; }
 
-  /* Journey flow — vertical stack on phone */
+  /* Journey flow — single column, compact on phone */
   .journey-flow {
-    flex-direction: column;
-    align-items: center;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
   }
-  .journey-node {
-    width: 100%;
-    max-width: 240px;
-  }
+  :root { --icon-sz: 40px; }
+  .journey-icon-wrap { font-size: 1rem; }
+  .journey-label { font-size: 0.72rem; }
+  .journey-desc { font-size: 0.65rem; max-width: none; }
 
   /* Reduce cover title so it doesn't overflow */
   .cover-h1-a,

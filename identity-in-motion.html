@@ -1097,6 +1097,134 @@ html {
   margin-top: 4px;
 }
 
+/* ============================================================
+   MOBILE RESPONSIVE — stack grids, scale typography
+   ============================================================ */
+
+/* Tablet & small screens */
+@media (max-width: 900px) {
+  /* Cover — stack to single column */
+  .slide-cover {
+    grid-template-columns: 1fr;
+  }
+  .cover-right { display: none; }
+  .cover-left::after { display: none; }
+
+  /* Split slides (photo panels) — stack */
+  .slide-split {
+    grid-template-columns: 1fr !important;
+  }
+  .split-photo { max-height: 30vh; }
+  .split-content::after { display: none; }
+
+  /* Network slide — stack */
+  .slide-network {
+    grid-template-columns: 1fr !important;
+  }
+  .network-panel { min-height: 35vh; }
+  .network-content::after { display: none; }
+
+  /* Problem grid — stack */
+  .problem-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  /* Fears — 1 column */
+  .fears-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  /* Pipeline — 2 columns */
+  .pipeline-grid {
+    grid-template-columns: 1fr 1fr;
+    max-height: none;
+  }
+
+  /* Sovereign grid — stack */
+  .sovereign-grid {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+
+  /* Break layout — stack */
+  .break-layout {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+  .break-visual { order: -1; max-height: 25vh; }
+
+  /* Journey flow — wrap on smaller screens */
+  .journey-flow {
+    flex-wrap: wrap;
+    justify-content: center;
+    max-height: none;
+  }
+  .journey-conn { display: none; }
+
+  /* Nav dots — smaller & closer to edge */
+  .nav-dots { right: 8px; }
+}
+
+/* Phone screens */
+@media (max-width: 600px) {
+  :root {
+    --slide-pad: clamp(1rem, 4vw, 1.5rem);
+    --gap:       clamp(0.5rem, 2vw, 1rem);
+  }
+
+  /* Scale inner content to prevent overflow */
+  .slide-inner {
+    padding: clamp(0.5rem, 1.5vh, 1rem) var(--slide-pad) var(--slide-pad);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Pipeline — single column on phone */
+  .pipeline-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Journey flow — vertical stack on phone */
+  .journey-flow {
+    flex-direction: column;
+    align-items: center;
+  }
+  .journey-node {
+    width: 100%;
+    max-width: 240px;
+  }
+
+  /* Reduce cover title so it doesn't overflow */
+  .cover-h1-a,
+  .cover-h1-b {
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
+  }
+
+  /* Trust quote — scale down */
+  .trust-quote {
+    font-size: clamp(1.1rem, 5vw, 1.8rem);
+  }
+
+  /* Conclusion quote — scale down */
+  .conclusion-quote {
+    font-size: clamp(1rem, 4.5vw, 1.5rem);
+  }
+
+  /* Gate card — full width */
+  .gate-card {
+    max-width: 100%;
+    padding: 1.5rem;
+  }
+
+  /* Hide nav dots on small phones */
+  .nav-dots { display: none; }
+
+  /* Chain visual — shrink */
+  .chain-node { width: auto; min-width: 80px; }
+}
+
 </style>
 </head>
 <body>

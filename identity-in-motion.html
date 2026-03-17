@@ -1117,12 +1117,10 @@ html {
   .split-photo { max-height: 30vh; }
   .split-content::after { display: none; }
 
-  /* Network slide — stack */
+  /* Network slide — keep horizontal but rebalance */
   .slide-network {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: 1fr 1fr !important;
   }
-  .network-panel { min-height: 35vh; }
-  .network-content::after { display: none; }
 
   /* Problem grid — stack */
   .problem-grid {
@@ -1148,12 +1146,10 @@ html {
     max-height: none;
   }
 
-  /* Break layout — stack */
+  /* Break layout — keep horizontal but rebalance */
   .break-layout {
-    grid-template-columns: 1fr;
-    max-height: none;
+    grid-template-columns: 1fr 1fr;
   }
-  .break-visual { order: -1; max-height: 25vh; }
 
   /* Journey flow — wrap on smaller screens */
   .journey-flow {
@@ -1185,6 +1181,20 @@ html {
   .pipeline-grid {
     grid-template-columns: 1fr;
   }
+
+  /* Network slide — now stack vertically on phone */
+  .slide-network {
+    grid-template-columns: 1fr !important;
+  }
+  .network-panel { min-height: 40vh; }
+  .network-content::after { display: none; }
+
+  /* Break layout — stack vertically on phone */
+  .break-layout {
+    grid-template-columns: 1fr;
+    max-height: none;
+  }
+  .break-visual { order: -1; max-height: 25vh; }
 
   /* Journey flow — vertical stack on phone */
   .journey-flow {

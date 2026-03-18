@@ -7,6 +7,18 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+<script>
+  firebase.initializeApp({
+    apiKey: 'AIzaSyD_p7a6b4uOE8H-lKV0bTbesziEYWDWeHo',
+    authDomain: 'rifftlo.firebaseapp.com',
+    projectId: 'rifftlo',
+    storageBucket: 'rifftlo.firebasestorage.app',
+    messagingSenderId: '64343999459',
+    appId: '1:64343999459:web:df2684257574f687af56d6'
+  });
+</script>
 <style>
 
 /* ============================================================
@@ -1096,6 +1108,44 @@ html {
   display: none;
   margin-top: 4px;
 }
+.gate-toggle {
+  font-family: var(--font-body);
+  font-size: clamp(0.62rem, 0.9vw, 0.75rem);
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  margin-top: 6px;
+}
+.gate-toggle:hover { opacity: 0.8; }
+.gate-signout {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-family: var(--font-body);
+  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  color: var(--text-muted);
+  background: rgba(255,255,255,0.06);
+  border: 1px solid var(--sep);
+  border-radius: 4px;
+  padding: 4px 10px;
+  cursor: pointer;
+  z-index: 11;
+  transition: color 0.2s, border-color 0.2s;
+  display: none;
+}
+.gate-signout:hover { color: var(--accent); border-color: var(--accent-dim); }
+.gate-user-info {
+  font-family: var(--font-body);
+  font-size: clamp(0.58rem, 0.85vw, 0.7rem);
+  color: var(--text-muted);
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  z-index: 11;
+  display: none;
+}
 
 /* ============================================================
    MOBILE RESPONSIVE — stack grids, scale typography
@@ -1582,12 +1632,14 @@ html {
     </a>
   </div>
   <div class="demo-frame-wrap">
-    <!-- Email gate — enter email to unlock prototype -->
+    <!-- Firebase Auth gate -->
+    <span class="gate-user-info" id="gateUserInfo"></span>
+    <button class="gate-signout" id="gateSignout">Sign out</button>
     <div class="demo-gate" id="demoGate">
       <div class="gate-card">
         <div class="gate-icon"><i class="fa-solid fa-lock"></i></div>
-        <h3>Access the Interactive Prototype</h3>
-        <p>Enter your email to unlock the live PCRCI demo.</p>
+        <h3 id="gateTitle">Sign in to Access Demo</h3>
+        <p id="gateSubtitle">Sign in with your account to unlock the live PCRCI prototype.</p>
         <form class="gate-form" id="gateForm">
           <input
             class="gate-input"
@@ -1598,11 +1650,22 @@ html {
             required
             autocomplete="email"
           />
+          <input
+            class="gate-input"
+            id="gatePassword"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+            autocomplete="current-password"
+            minlength="6"
+          />
           <button class="gate-submit" type="submit" id="gateSubmit">
-            Unlock Demo &rarr;
+            Sign In &rarr;
           </button>
-          <div class="gate-error" id="gateError">Something went wrong. Please try again.</div>
-          <p class="gate-note">No spam. Used only to track demo access.</p>
+          <div class="gate-error" id="gateError"></div>
+          <button type="button" class="gate-toggle" id="gateToggle">Don't have an account? Sign up</button>
+          <p class="gate-note">Your account is stored securely via Firebase Auth.</p>
         </form>
       </div>
     </div>
@@ -1774,51 +1837,107 @@ class SlidePresentation {
 new SlidePresentation();
 
 /* ============================================================
-   EMAIL GATE — submit to Formspree, then reveal iframe
-   Replace YOUR_FORM_ID with your Formspree form ID
-   Sign up free at https://formspree.io
+   FIREBASE AUTH GATE — sign in / sign up to unlock demo
    ============================================================ */
 (function() {
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xojklybb';
-  const gate     = document.getElementById('demoGate');
-  const form     = document.getElementById('gateForm');
-  const emailEl  = document.getElementById('gateEmail');
-  const submitEl = document.getElementById('gateSubmit');
-  const errorEl  = document.getElementById('gateError');
+  const auth      = firebase.auth();
+  const gate      = document.getElementById('demoGate');
+  const form      = document.getElementById('gateForm');
+  const emailEl   = document.getElementById('gateEmail');
+  const passEl    = document.getElementById('gatePassword');
+  const submitEl  = document.getElementById('gateSubmit');
+  const errorEl   = document.getElementById('gateError');
+  const toggleEl  = document.getElementById('gateToggle');
+  const titleEl   = document.getElementById('gateTitle');
+  const subtitleEl = document.getElementById('gateSubtitle');
+  const signoutEl = document.getElementById('gateSignout');
+  const userInfoEl = document.getElementById('gateUserInfo');
 
   if (!gate || !form) return;
 
-  // If already unlocked in this session, skip gate
-  if (sessionStorage.getItem('demoUnlocked') === '1') {
+  let isSignUp = false;
+
+  // Toggle between sign-in and sign-up
+  toggleEl.addEventListener('click', () => {
+    isSignUp = !isSignUp;
+    titleEl.textContent = isSignUp ? 'Create an Account' : 'Sign in to Access Demo';
+    subtitleEl.textContent = isSignUp
+      ? 'Create a free account to unlock the live PCRCI prototype.'
+      : 'Sign in with your account to unlock the live PCRCI prototype.';
+    submitEl.textContent = isSignUp ? 'Sign Up →' : 'Sign In →';
+    toggleEl.textContent = isSignUp
+      ? 'Already have an account? Sign in'
+      : "Don't have an account? Sign up";
+    passEl.autocomplete = isSignUp ? 'new-password' : 'current-password';
+    errorEl.style.display = 'none';
+  });
+
+  // Unlock the demo UI
+  function unlockDemo(user) {
     gate.classList.add('unlocked');
+    signoutEl.style.display = 'block';
+    userInfoEl.style.display = 'block';
+    userInfoEl.textContent = user.email;
   }
 
+  // Lock the demo UI
+  function lockDemo() {
+    gate.classList.remove('unlocked');
+    signoutEl.style.display = 'none';
+    userInfoEl.style.display = 'none';
+  }
+
+  // Listen for auth state changes (persists across page reloads)
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      unlockDemo(user);
+    } else {
+      lockDemo();
+    }
+  });
+
+  // Sign out
+  signoutEl.addEventListener('click', () => {
+    auth.signOut();
+  });
+
+  // Friendly error messages
+  function authError(code) {
+    switch (code) {
+      case 'auth/invalid-email': return 'Invalid email address.';
+      case 'auth/user-disabled': return 'This account has been disabled.';
+      case 'auth/user-not-found': return 'No account found. Sign up first.';
+      case 'auth/wrong-password': return 'Incorrect password.';
+      case 'auth/invalid-credential': return 'Incorrect email or password.';
+      case 'auth/email-already-in-use': return 'Email already registered. Sign in instead.';
+      case 'auth/weak-password': return 'Password must be at least 6 characters.';
+      case 'auth/too-many-requests': return 'Too many attempts. Try again later.';
+      default: return 'Something went wrong. Please try again.';
+    }
+  }
+
+  // Handle form submit
   form.addEventListener('submit', async function(e) {
     e.preventDefault();
     const email = emailEl.value.trim();
-    if (!email) return;
+    const pass  = passEl.value;
+    if (!email || !pass) return;
 
     submitEl.disabled = true;
-    submitEl.textContent = 'Submitting…';
+    submitEl.textContent = isSignUp ? 'Creating account…' : 'Signing in…';
     errorEl.style.display = 'none';
 
     try {
-      const res = await fetch(FORMSPREE_ENDPOINT, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-
-      if (res.ok) {
-        sessionStorage.setItem('demoUnlocked', '1');
-        gate.classList.add('unlocked');
+      if (isSignUp) {
+        await auth.createUserWithEmailAndPassword(email, pass);
       } else {
-        throw new Error('bad response');
+        await auth.signInWithEmailAndPassword(email, pass);
       }
-    } catch (_) {
+    } catch (err) {
+      errorEl.textContent = authError(err.code);
       errorEl.style.display = 'block';
       submitEl.disabled = false;
-      submitEl.textContent = 'Unlock Demo →';
+      submitEl.textContent = isSignUp ? 'Sign Up →' : 'Sign In →';
     }
   });
 })();

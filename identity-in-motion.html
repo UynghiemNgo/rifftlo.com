@@ -1279,6 +1279,12 @@ html {
   display: flex;
   align-items: center;
   gap: 10px;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.auth-bar.hidden {
+  opacity: 0;
+  transform: translateY(-20px);
+  pointer-events: none;
 }
 .auth-bar-btn {
   font-family: var(--font-body);
@@ -1818,11 +1824,18 @@ class SlidePresentation {
           this.current = this.slides.indexOf(entry.target);
           this.updateProgress();
           this.updateDots();
+          this.updateAuthBar();
         }
       });
     }, { threshold: 0.2 });
 
     this.slides.forEach(s => observer.observe(s));
+  }
+
+  /* --- Auth bar visibility (show through slide 07, hide after) --- */
+  updateAuthBar() {
+    const bar = document.getElementById('authBar');
+    if (bar) bar.classList.toggle('hidden', this.current > 7);
   }
 
   /* --- Navigation --- */
@@ -1834,6 +1847,7 @@ class SlidePresentation {
     this.slides[i].scrollIntoView({ behavior: 'smooth' });
     this.updateProgress();
     this.updateDots();
+    this.updateAuthBar();
     // Release lock after scroll animation completes
     clearTimeout(this._scrollTimer);
     this._scrollTimer = setTimeout(() => { this.isScrolling = false; }, 1000);

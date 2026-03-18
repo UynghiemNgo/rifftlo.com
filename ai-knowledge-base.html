@@ -1,0 +1,1139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Knowledge Base — rifftlo.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Jost:wght@300;400;500&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg:         #0d1219;
+  --bg-alt:     #0a1018;
+  --bg-panel:   #0c1520;
+  --text:       #d4e2f2;
+  --text-sec:   rgba(195,215,240,0.52);
+  --text-muted: rgba(195,215,240,0.26);
+  --accent:     #7eb8f0;
+  --accent-dim: rgba(99,149,210,0.38);
+  --accent-glow:rgba(126,184,240,0.14);
+  --sep:        rgba(99,149,210,0.22);
+  --font-display:'Newsreader', serif;
+  --font-body:  'Jost', sans-serif;
+  --ease:       cubic-bezier(0.16,1,0.3,1);
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  line-height: 1.6;
+}
+
+/* Top bar */
+.kb-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(13,18,25,0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--sep);
+  padding: 12px clamp(1rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.kb-logo {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--accent);
+  text-decoration: none;
+}
+.kb-logo span { color: var(--text); font-style: normal; }
+.kb-back {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  color: var(--text-sec);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.2s;
+}
+.kb-back:hover { color: var(--accent); }
+
+/* Search */
+.kb-search-wrap {
+  max-width: 520px;
+  width: 100%;
+  margin: clamp(2rem, 5vh, 4rem) auto clamp(1.5rem, 3vh, 2.5rem);
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+.kb-search-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--sep);
+  border-radius: 10px;
+  padding: 12px 16px;
+  transition: border-color 0.25s;
+}
+.kb-search-box:focus-within { border-color: var(--accent); }
+.kb-search-box i { color: var(--text-muted); font-size: 0.9rem; }
+.kb-search-input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 0.92rem;
+  font-weight: 300;
+  outline: none;
+}
+.kb-search-input::placeholder { color: var(--text-muted); }
+.kb-search-hint {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Hero heading */
+.kb-hero {
+  text-align: center;
+  padding: clamp(2.5rem, 6vh, 5rem) clamp(1rem, 4vw, 3rem) 0;
+}
+.kb-hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 4vw, 3rem);
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 0.5rem;
+}
+.kb-hero h1 em { color: var(--accent); font-style: italic; }
+.kb-hero p {
+  font-size: clamp(0.82rem, 1.2vw, 1rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  max-width: 540px;
+  margin: 0 auto;
+}
+
+/* Category grid */
+.kb-categories {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: clamp(12px, 2vw, 20px);
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: clamp(1rem, 3vh, 2rem) clamp(1rem, 4vw, 3rem);
+}
+.kb-cat-card {
+  background: rgba(99,149,210,0.04);
+  border: 1px solid var(--sep);
+  border-radius: 8px;
+  padding: clamp(1.2rem, 2.5vw, 1.8rem);
+  cursor: pointer;
+  transition: border-color 0.3s, transform 0.3s, background 0.3s;
+}
+.kb-cat-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-2px);
+  background: rgba(99,149,210,0.07);
+}
+.kb-cat-icon {
+  width: 36px; height: 36px;
+  background: rgba(126,184,240,0.09);
+  border: 1px solid rgba(126,184,240,0.15);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  color: var(--accent);
+  margin-bottom: 12px;
+}
+.kb-cat-card h3 {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 1.6vw, 1.25rem);
+  font-weight: 300;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.kb-cat-card p {
+  font-size: clamp(0.72rem, 1vw, 0.85rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.5;
+}
+.kb-cat-count {
+  display: inline-block;
+  font-size: 0.65rem;
+  color: var(--accent);
+  background: rgba(126,184,240,0.1);
+  border-radius: 10px;
+  padding: 2px 8px;
+  margin-top: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* Article list within category */
+.kb-section {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 0 clamp(1rem, 4vw, 3rem);
+}
+.kb-section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: clamp(2rem, 4vh, 3rem) 0 clamp(1rem, 2vh, 1.5rem);
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--sep);
+}
+.kb-section-header i { color: var(--accent); font-size: 0.9rem; }
+.kb-section-header h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.2rem, 2vw, 1.6rem);
+  font-weight: 300;
+  color: var(--text);
+}
+
+.kb-article {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+.kb-article:hover { border-color: var(--sep); }
+.kb-article-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  cursor: pointer;
+  user-select: none;
+}
+.kb-article-header i.chevron {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  transition: transform 0.3s var(--ease);
+  flex-shrink: 0;
+}
+.kb-article.open .kb-article-header i.chevron { transform: rotate(90deg); }
+.kb-article-title {
+  font-family: var(--font-body);
+  font-size: clamp(0.82rem, 1.1vw, 0.95rem);
+  color: var(--text);
+  font-weight: 400;
+  flex: 1;
+}
+.kb-article-tag {
+  font-size: 0.6rem;
+  color: var(--accent);
+  background: rgba(126,184,240,0.08);
+  border-radius: 8px;
+  padding: 2px 7px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.kb-article-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s var(--ease);
+}
+.kb-article.open .kb-article-body { max-height: 2000px; }
+.kb-article-content {
+  padding: 0 16px 18px 42px;
+  font-size: clamp(0.78rem, 1vw, 0.88rem);
+  color: var(--text-sec);
+  font-weight: 300;
+  line-height: 1.7;
+}
+.kb-article-content strong { color: var(--text); font-weight: 400; }
+.kb-article-content ul {
+  list-style: none;
+  margin: 8px 0;
+}
+.kb-article-content ul li {
+  padding: 4px 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.kb-article-content ul li::before {
+  content: '';
+  width: 4px; height: 4px;
+  background: var(--accent);
+  border-radius: 50%;
+  opacity: 0.5;
+  flex-shrink: 0;
+  margin-top: 0.35em;
+}
+.kb-article-content code {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.82em;
+  background: rgba(126,184,240,0.08);
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--accent);
+}
+.kb-article-content .endpoint {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78em;
+  background: rgba(126,184,240,0.06);
+  border: 1px solid var(--sep);
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin: 2px 0;
+  color: var(--accent);
+}
+.kb-article-content .method {
+  font-weight: 500;
+  color: var(--text);
+  margin-right: 4px;
+}
+.kb-article-content table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 0.82em;
+}
+.kb-article-content th {
+  text-align: left;
+  padding: 6px 10px;
+  border-bottom: 1px solid var(--sep);
+  color: var(--accent);
+  font-weight: 500;
+  font-size: 0.85em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+.kb-article-content td {
+  padding: 5px 10px;
+  border-bottom: 1px solid rgba(99,149,210,0.08);
+  color: var(--text-sec);
+}
+
+/* Footer */
+.kb-footer {
+  text-align: center;
+  padding: clamp(2rem, 5vh, 4rem) clamp(1rem, 4vw, 3rem);
+  margin-top: clamp(2rem, 4vh, 3rem);
+  border-top: 1px solid var(--sep);
+}
+.kb-footer p {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+.kb-footer a { color: var(--accent); text-decoration: none; }
+.kb-footer a:hover { text-decoration: underline; }
+
+/* No results */
+.kb-no-results {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .kb-categories { grid-template-columns: 1fr; }
+  .kb-topbar { flex-wrap: wrap; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<header class="kb-topbar">
+  <a class="kb-logo" href="identity-in-motion.html"><em>rifftlo</em><span>.com</span></a>
+  <a class="kb-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Presentation</a>
+</header>
+
+<!-- Hero -->
+<div class="kb-hero">
+  <h1>PCRCI <em>Knowledge Base</em></h1>
+  <p>Everything you need to know about the Pre-Civil Registration Confidence Infrastructure.</p>
+</div>
+
+<!-- Search -->
+<div class="kb-search-wrap">
+  <div class="kb-search-box">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <input class="kb-search-input" id="kbSearch" type="text" placeholder="Search articles..." />
+  </div>
+  <p class="kb-search-hint">Try: attestation, NFC, API, fraud, enrollment</p>
+</div>
+
+<!-- Category cards (overview) -->
+<div class="kb-categories" id="kbCategories">
+  <div class="kb-cat-card" data-section="getting-started">
+    <div class="kb-cat-icon"><i class="fa-solid fa-rocket"></i></div>
+    <h3>Getting Started</h3>
+    <p>What is PCRCI, how it works, and who it serves.</p>
+    <span class="kb-cat-count">6 articles</span>
+  </div>
+  <div class="kb-cat-card" data-section="agents">
+    <div class="kb-cat-icon"><i class="fa-solid fa-id-badge"></i></div>
+    <h3>Agents &amp; Field Users</h3>
+    <p>Agent login, enrollment, NFC cards, and attestation workflows.</p>
+    <span class="kb-cat-count">7 articles</span>
+  </div>
+  <div class="kb-cat-card" data-section="api">
+    <div class="kb-cat-icon"><i class="fa-solid fa-code"></i></div>
+    <h3>API &amp; Integration</h3>
+    <p>REST endpoints, authentication, webhooks, and code examples.</p>
+    <span class="kb-cat-count">8 articles</span>
+  </div>
+  <div class="kb-cat-card" data-section="security">
+    <div class="kb-cat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+    <h3>Security &amp; Privacy</h3>
+    <p>Biometric hashing, fraud rules, audit trails, and compliance.</p>
+    <span class="kb-cat-count">5 articles</span>
+  </div>
+  <div class="kb-cat-card" data-section="gov">
+    <div class="kb-cat-icon"><i class="fa-solid fa-landmark"></i></div>
+    <h3>Government &amp; Institutions</h3>
+    <p>KYC verification, confidence scores, thresholds, and onboarding.</p>
+    <span class="kb-cat-count">5 articles</span>
+  </div>
+  <div class="kb-cat-card" data-section="technical">
+    <div class="kb-cat-icon"><i class="fa-solid fa-server"></i></div>
+    <h3>Technical Architecture</h3>
+    <p>Offline-first design, database, sync, and deployment.</p>
+    <span class="kb-cat-count">5 articles</span>
+  </div>
+</div>
+
+<!-- No results message -->
+<div class="kb-no-results" id="kbNoResults">
+  <i class="fa-solid fa-magnifying-glass" style="font-size:1.5rem;opacity:0.3;display:block;margin-bottom:10px"></i>
+  No articles matched your search.
+</div>
+
+<!-- ============================================================
+     SECTIONS — each with expandable articles
+     ============================================================ -->
+
+<div class="kb-section" data-section="getting-started">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-rocket"></i>
+    <h2>Getting Started</h2>
+  </div>
+
+  <div class="kb-article" data-tags="pcrci overview what is identity">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">What is PCRCI?</span>
+      <span class="kb-article-tag">Overview</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p><strong>PCRCI</strong> (Pre-Civil Registration Confidence Infrastructure) is a system that turns community knowledge into structured, verifiable identity evidence for people who lack formal documentation.</p>
+      <p>Over 1 billion people worldwide exist outside formal identity systems. Without an ID, they cannot access banking, healthcare, land rights, or government services. PCRCI bridges this gap using community attestation — neighbours, elders, and local leaders vouch for a person's identity, building a confidence score that unlocks services progressively.</p>
+      <p>Built by <strong>Rifftlo Inc.</strong> (Delaware, USA), PCRCI operates in the Philippines, Papua New Guinea, Timor-Leste, Solomon Islands, Vanuatu, Fiji, and Indonesia.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="how it works flow pipeline steps">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">How does the pipeline work?</span>
+      <span class="kb-article-tag">Overview</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>The PCRCI pipeline has six steps:</p>
+      <ul>
+        <li><strong>Step 1 — Human Presence:</strong> The person comes first, before any document or credential.</li>
+        <li><strong>Step 2 — Biometric & Voice Capture:</strong> Offline, non-invasive, held with full consent. Only SHA-256 hashes are stored — never raw biometrics.</li>
+        <li><strong>Step 3 — Community Attestation:</strong> Social recognition is converted into verifiable, signed evidence.</li>
+        <li><strong>Step 4 — Identity Confidence Score:</strong> Trust is measured and weighted — not assumed or imposed.</li>
+        <li><strong>Step 5 — Institutional Recognition:</strong> The first door opens — banking, healthcare, land registration.</li>
+        <li><strong>Step 6 — National ID Integration:</strong> The transition to formal systems becomes seamless.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="users roles agent attestor subject types">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">User types and roles</span>
+      <span class="kb-article-tag">Roles</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI has three primary user types:</p>
+      <ul>
+        <li><strong>Agent:</strong> A trained field worker who enrolls subjects and manages the enrollment device. Requires a government-issued promo code, biometric registration, and NFC badge.</li>
+        <li><strong>Attestor:</strong> A community member (neighbour, elder, family, official) who vouches for a subject's identity. Registers with a government ID and face liveness check.</li>
+        <li><strong>Subject:</strong> The person being identified. Receives an NFC card with their DID (Decentralized Identifier) and builds a confidence score through attestations.</li>
+      </ul>
+      <p>The platform also has administrative roles: <strong>Administrator</strong>, <strong>Senior</strong>, <strong>Junior</strong>, <strong>Viewer</strong>, <strong>Auditor</strong>, and <strong>Government API</strong> access.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="confidence score points threshold attestation weight">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">How confidence scores work</span>
+      <span class="kb-article-tag">Scoring</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Every subject starts with a confidence score of <strong>1</strong> (self-enrollment). Attestations from community members add points based on the attestor's relationship type:</p>
+      <table>
+        <tr><th>Attestor Type</th><th>Weight</th></tr>
+        <tr><td>Community member</td><td>+1</td></tr>
+        <tr><td>Family member</td><td>+2</td></tr>
+        <tr><td>Tribe/clan leader</td><td>+3</td></tr>
+        <tr><td>Local leader</td><td>+3</td></tr>
+        <tr><td>Local officer</td><td>+4</td></tr>
+        <tr><td>Government officer</td><td>+5</td></tr>
+      </table>
+      <p>Score thresholds unlock services:</p>
+      <table>
+        <tr><th>Score</th><th>Access Level</th></tr>
+        <tr><td>4+</td><td>Basic — community services</td></tr>
+        <tr><td>7+</td><td>Standard — banking, healthcare</td></tr>
+        <tr><td>10+</td><td>Enhanced — land registration, insurance</td></tr>
+        <tr><td>15+</td><td>Full — national ID integration</td></tr>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="countries markets regions supported">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Supported countries and languages</span>
+      <span class="kb-article-tag">Regions</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p><strong>Day-one markets:</strong> Philippines, Papua New Guinea, Timor-Leste, Solomon Islands, Vanuatu, Fiji, Indonesia.</p>
+      <p><strong>Philippines languages (8):</strong> Tagalog, Cebuano, Ilocano, Waray, Kapampangan, Bikol, Hiligaynon, Pangasinan.</p>
+      <p><strong>Pacific languages (6):</strong> Tok Pisin, Tetum, Bislama, Pijin, Fijian, Bahasa Indonesia.</p>
+      <p>All agent and admin interfaces also support English. The app uses text-to-speech and speech-to-text for accessibility in the field.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="did decentralized identifier format">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Decentralized Identifiers (DIDs)</span>
+      <span class="kb-article-tag">Identity</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Every agent, subject, and attestor receives a DID in the format: <code>did:pcrci:{country}:{uuid}</code></p>
+      <p>DIDs are never reused, even if a subject's NFC card is replaced. They serve as the permanent, privacy-preserving identifier across the system — written to NFC cards and used in all API lookups.</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="kb-section" data-section="agents">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-id-badge"></i>
+    <h2>Agents &amp; Field Users</h2>
+  </div>
+
+  <div class="kb-article" data-tags="agent login biometric nfc badge authentication">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Agent login and authentication</span>
+      <span class="kb-article-tag">Login</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Agents authenticate using two factors:</p>
+      <ul>
+        <li><strong>NFC badge tap:</strong> The agent's registered badge is read via NFC (NTAG215/216 cards with NDEF text records containing their DID).</li>
+        <li><strong>Biometric verification:</strong> Fingerprint or Face ID via the device's local authentication.</li>
+      </ul>
+      <p>On successful login, a session is created with a unique hash, and an <code>agent_login</code> event is recorded in the immutable activity log.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="agent setup registration promo code id photo">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Agent setup and registration</span>
+      <span class="kb-article-tag">Setup</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>New agents register through a multi-step process:</p>
+      <ul>
+        <li><strong>Promo code:</strong> Enter a government-issued code (format: XXXX-XXXX-XXXX), validated against the backend.</li>
+        <li><strong>ID upload:</strong> Upload government ID and a second form of identification. Face detection (MLKit) extracts face geometry and creates a SHA-256 hash.</li>
+        <li><strong>Location capture:</strong> GPS coordinates are recorded as the agent's registered location (used for fraud geo-fencing).</li>
+        <li><strong>NFC badge write:</strong> The agent's DID is written to their NFC badge.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="enrollment steps subject name voice birthday location nfc">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Enrolling a subject (8-step flow)</span>
+      <span class="kb-article-tag">Enrollment</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Subject enrollment follows 8 steps:</p>
+      <ul>
+        <li><strong>1. Language selection:</strong> Choose the subject's preferred language for TTS/STT.</li>
+        <li><strong>2. Consent:</strong> Subject gives informed consent, read aloud in their language.</li>
+        <li><strong>3. Name entry:</strong> Via voice (speech-to-text) or alphabet keyboard. Gender is also captured.</li>
+        <li><strong>4. Birthday:</strong> Estimated birth year or exact date, with voice parsing support.</li>
+        <li><strong>5. Location:</strong> GPS auto-detect with manual override for tribe/clan/village.</li>
+        <li><strong>6. Review:</strong> All details read aloud for confirmation.</li>
+        <li><strong>7. NFC card write:</strong> The subject's DID and biometric hash are written to their NFC card.</li>
+        <li><strong>8. Face photo:</strong> Optional face capture for biometric hash (SHA-256 only).</li>
+      </ul>
+      <p>The entire flow works <strong>offline</strong>. Data is queued in SQLite and synced to Firestore when connectivity returns.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="attestation vouch community attestor register">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">How attestation works</span>
+      <span class="kb-article-tag">Attestation</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p><strong>Attestors</strong> are community members who vouch for a subject's identity. They first register by uploading a government ID and passing a face liveness check.</p>
+      <p>To attest, the attestor taps the subject's NFC card, confirms the subject's identity, and records their attestation with a weight based on their relationship type (community, family, leader, official).</p>
+      <p>Multiple attestations from different people create a <strong>confidence network</strong> — each one adds points to the subject's confidence score, progressively unlocking services.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="nfc card write replace lost damaged tap">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">NFC card operations</span>
+      <span class="kb-article-tag">NFC</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI uses <strong>NTAG215/216 NFC cards</strong> to store a subject's DID and biometric hash. Cards are written during enrollment and read at government kiosks or attestation points.</p>
+      <ul>
+        <li><strong>Write:</strong> During enrollment step 7, the agent's device writes the subject's DID to a blank NFC card.</li>
+        <li><strong>Read:</strong> Tapping a card retrieves the DID for verification, attestation, or kiosk access.</li>
+        <li><strong>Replace:</strong> If a card is lost or damaged, agents can issue a replacement card linked to the same DID.</li>
+      </ul>
+      <p>Security rule: the same NFC card DID cannot be written twice — attempting it triggers a block and alert.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="offline first sync sqlite queue connectivity">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Working offline</span>
+      <span class="kb-article-tag">Offline</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI is designed <strong>offline-first</strong>. All enrollment, attestation, and login operations work without internet connectivity.</p>
+      <p>Data is stored locally in <strong>SQLite</strong> and queued for sync. When the device reconnects, the sync service pushes all queued records to Firestore with retry logic and exponential backoff. Connectivity changes trigger sync automatically.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="government kiosk access consent face verification">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Government kiosk and NFC access</span>
+      <span class="kb-article-tag">Gov Access</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Subjects access government services by tapping their NFC card at a kiosk. The flow:</p>
+      <ul>
+        <li><strong>Tap & consent:</strong> Subject taps their card. A consent disclosure is shown and read aloud.</li>
+        <li><strong>Face verification:</strong> Optional biometric re-authentication via face scan.</li>
+        <li><strong>Access granted:</strong> If the subject's confidence score meets the required threshold, their identity is shared with the requesting institution.</li>
+      </ul>
+      <p>The kiosk runs in full-screen mode and auto-resets after each session for privacy.</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="kb-section" data-section="api">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-code"></i>
+    <h2>API &amp; Integration</h2>
+  </div>
+
+  <div class="kb-article" data-tags="api overview rest json authentication key token">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">API overview and authentication</span>
+      <span class="kb-article-tag">API</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>The PCRCI Government API is a read-only REST API that lets institutions verify subject identity <strong>without exposing PII</strong>. Two authentication methods:</p>
+      <ul>
+        <li><strong>API Key:</strong> Pass via <code>X-API-Key</code> header. Provisioned by an admin.</li>
+        <li><strong>OIDC OAuth 2.0:</strong> Client credentials flow via <code>POST /oauth/token</code>. Returns a JWT for Bearer authentication.</li>
+      </ul>
+      <p>Rate limits: <strong>60 requests/minute</strong> per API key, <strong>100/minute</strong> per IP address.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="verify endpoint score did country lookup">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Verification endpoints</span>
+      <span class="kb-article-tag">Endpoints</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Core verification endpoints:</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/verify/{country}/{did}</span><br/>Full verification status — returns confidence score, threshold met, attestation count. No PII exposed.</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/score/{country}/{did}</span><br/>Score with next threshold progress — useful for showing how close a subject is to the next access level.</p>
+      <p><span class="endpoint"><span class="method">POST</span> /gov/v1/batch-verify</span><br/>Verify up to 100 subjects in a single request.</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/kyc/{country}/{did}</span><br/>KYC status and creditworthiness for financial institutions.</p>
+      <p><span class="endpoint"><span class="method">POST</span> /gov/v1/emergency-lookup</span><br/>Hospital emergency identity verification — expedited access for medical emergencies.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="webhook events signature hmac notification">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Webhooks and real-time notifications</span>
+      <span class="kb-article-tag">Webhooks</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI sends real-time webhook notifications for 14 event types including threshold crossings, fraud alerts, and compliance events. Webhooks are scoped by <strong>institution type</strong> — banks, hospitals, NGOs, education, insurance, and microfinance each receive tailored payloads.</p>
+      <p>All webhooks are signed with <strong>HMAC-SHA256</strong>. Verify the <code>X-PCRCI-Signature</code> header against the raw request body using your webhook secret. Always use timing-safe comparison.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="quickstart example python node curl code sample">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Quickstart code examples</span>
+      <span class="kb-article-tag">Code</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Copy-paste examples available in Python, Node.js, and cURL:</p>
+      <ul>
+        <li><strong>Python:</strong> Verify subject, KYC check, batch verify, emergency lookup using <code>requests</code> library.</li>
+        <li><strong>Node.js:</strong> Verify subject with <code>fetch</code>, webhook consumer with Express.</li>
+        <li><strong>cURL:</strong> Quick terminal commands for testing all major endpoints.</li>
+      </ul>
+      <p>Start with sandbox testing using your sandbox API key at <code>/gov/v1/sandbox/</code> endpoints, which return deterministic mock data.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="sandbox testing mock data development">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Sandbox and testing</span>
+      <span class="kb-article-tag">Testing</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>The sandbox environment provides deterministic mock data for development and testing:</p>
+      <ul>
+        <li><strong>Sandbox endpoints:</strong> <code>/gov/v1/sandbox/verify/{country}/{did}</code> — identical response format to production.</li>
+        <li><strong>Mock data generation:</strong> <code>POST /gov/v1/sandbox/data/generate/{type}</code> — create test subjects, attestations, and fraud scenarios.</li>
+        <li><strong>Sandbox API keys</strong> are issued separately and cannot access production data.</li>
+      </ul>
+      <p>Before going live, complete the 13-point production checklist covering error handling, rate limit compliance, webhook verification, and security review.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="error codes status 400 401 403 404 429 500">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Error codes reference</span>
+      <span class="kb-article-tag">Errors</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <table>
+        <tr><th>Code</th><th>Meaning</th></tr>
+        <tr><td><code>400</code></td><td>Bad request — invalid parameters or malformed body.</td></tr>
+        <tr><td><code>401</code></td><td>Unauthorized — missing or invalid API key / token.</td></tr>
+        <tr><td><code>403</code></td><td>Forbidden — valid credentials but insufficient permissions.</td></tr>
+        <tr><td><code>404</code></td><td>Not found — subject DID does not exist in the specified country.</td></tr>
+        <tr><td><code>409</code></td><td>Conflict — duplicate operation (e.g., NFC card already written).</td></tr>
+        <tr><td><code>429</code></td><td>Rate limited — exceeded 60 requests/minute. Retry after cooldown.</td></tr>
+        <tr><td><code>500</code></td><td>Internal server error — contact support.</td></tr>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="soap xml wsdl cobol mainframe legacy integration">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Legacy system integration (SOAP, COBOL, ISO 20022)</span>
+      <span class="kb-article-tag">Legacy</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI supports integration with legacy systems used by central banks and government mainframes:</p>
+      <ul>
+        <li><strong>SOAP/XML:</strong> WSDL endpoint at <code>/gov/soap?wsdl</code> with VerifySubject, BatchVerify, and KYCCheck operations.</li>
+        <li><strong>COBOL:</strong> Fixed-width batch file processing (80/132 byte records) with COPYBOOK files. Transfer via SFTP, poll for results.</li>
+        <li><strong>ISO 20022:</strong> Central bank and SWIFT-compatible message formats for financial integration.</li>
+        <li><strong>Batch file:</strong> CSV and fixed-width formats with async processing and result polling.</li>
+      </ul>
+      <p>All legacy endpoints support the same API key authentication. EBCDIC-safe character handling is documented for mainframe environments.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="onboarding register api access self-service">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Self-service API onboarding</span>
+      <span class="kb-article-tag">Onboarding</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Institutions can register for API access via self-service:</p>
+      <p><span class="endpoint"><span class="method">POST</span> /gov/v1/onboard</span><br/>Submit your institution details (name, type, country, contact). Rate-limited to prevent abuse.</p>
+      <p>After submission, a PCRCI administrator reviews and approves the request. Once approved, you receive your API key and webhook secret. You can check your onboarding status at any time:</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/onboard/{id}</span></p>
+    </div></div>
+  </div>
+</div>
+
+<div class="kb-section" data-section="security">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-shield-halved"></i>
+    <h2>Security &amp; Privacy</h2>
+  </div>
+
+  <div class="kb-article" data-tags="biometric hash sha256 face fingerprint privacy no raw">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Biometric data handling</span>
+      <span class="kb-article-tag">Privacy</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI <strong>never stores raw biometric data</strong>. Face geometry is extracted via MLKit, then immediately hashed with SHA-256. Only the hash is stored and transmitted. This is a non-negotiable design principle.</p>
+      <p>Biometric hashes are used for deduplication (detecting if two enrollments are the same person) and re-authentication at kiosks. The original images are discarded after hashing.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="fraud rules detection velocity geo gps nfc duplicate">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Fraud detection rules</span>
+      <span class="kb-article-tag">Fraud</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Six automated fraud rules protect the system:</p>
+      <table>
+        <tr><th>Rule</th><th>Action</th></tr>
+        <tr><td>Attestor &gt; 20 attestations in 7 days</td><td>Auto-suspend attestor</td></tr>
+        <tr><td>Attestor attests subject from same agent session</td><td>Block attestation</td></tr>
+        <tr><td>Two biometric hashes &gt; 90% similar</td><td>Flag both subjects</td></tr>
+        <tr><td>Agent enrolls &gt; 500m outside registered GPS</td><td>Warn + log</td></tr>
+        <tr><td>Agent &gt; 8 enrollments per hour</td><td>Flag agent</td></tr>
+        <tr><td>Same NFC card DID written twice</td><td>Block + alert</td></tr>
+      </table>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="audit trail log immutable hash chain append only ledger">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Immutable audit trail</span>
+      <span class="kb-article-tag">Audit</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Every action in PCRCI is recorded in an <strong>append-only, hash-chained activity log</strong>. No entry can be modified or deleted — enforced at both the application level and by Firestore security rules.</p>
+      <p>Each log entry contains: event type, actor DID, subject DID, payload, timestamp, and a SHA-256 hash that chains to the previous entry (genesis entry uses 64 zeros). This creates a tamper-evident record.</p>
+      <p>Event types include: <code>agent_login</code>, <code>enrollment</code>, <code>nfc_write</code>, <code>attestation</code>, <code>fraud_flag</code>, <code>gov_consent</code>, <code>gov_access</code>, and <code>admin_action</code>.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="rbac roles permissions access control administrator">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Role-based access control (RBAC)</span>
+      <span class="kb-article-tag">Access</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>All backend endpoints are protected by RBAC. Roles and their capabilities:</p>
+      <ul>
+        <li><strong>Administrator:</strong> Full access — user management, fraud review, audit export, webhook config, API key provisioning.</li>
+        <li><strong>Senior:</strong> Enrollment, fraud review, audit log read.</li>
+        <li><strong>Junior:</strong> Enrollment and attestation only.</li>
+        <li><strong>Viewer:</strong> Read-only dashboard access.</li>
+        <li><strong>Auditor:</strong> Audit log access and export.</li>
+        <li><strong>Agent:</strong> Field enrollment and attestation.</li>
+        <li><strong>Government API:</strong> External API access only.</li>
+      </ul>
+      <p>Roles are stored as Firebase Auth custom claims and enforced by middleware on every request.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="compliance regulatory fatf eidas iso 27001 id4d">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Regulatory compliance</span>
+      <span class="kb-article-tag">Compliance</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI aligns with major regulatory frameworks:</p>
+      <ul>
+        <li><strong>FATF:</strong> Know-Your-Customer (KYC) guidelines for financial inclusion.</li>
+        <li><strong>World Bank ID4D:</strong> Identification for Development principles.</li>
+        <li><strong>eIDAS:</strong> Electronic identification standards (EU-compatible).</li>
+        <li><strong>ISO/IEC 29115:</strong> Entity authentication assurance framework.</li>
+        <li><strong>ISO 27001:</strong> All admin requests are logged in a compliance audit trail.</li>
+      </ul>
+      <p>TLS 1.2+ is enforced on all connections. All data at rest is encrypted via Firebase/Google Cloud default encryption.</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="kb-section" data-section="gov">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-landmark"></i>
+    <h2>Government &amp; Institutions</h2>
+  </div>
+
+  <div class="kb-article" data-tags="kyc banking financial institution credit">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">KYC and financial institution access</span>
+      <span class="kb-article-tag">Banking</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Banks and microfinance institutions can verify subject identity and creditworthiness via the KYC endpoint:</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/kyc/{country}/{did}</span></p>
+      <p>Returns confidence score, threshold status, attestation history, and a KYC recommendation — all without exposing personal data. The institution decides whether to approve access based on the score and their own policies.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="threshold service level basic standard enhanced full access unlock">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Service thresholds and progressive access</span>
+      <span class="kb-article-tag">Thresholds</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI uses progressive trust — subjects gain access to services as their confidence score grows:</p>
+      <ul>
+        <li><strong>4+ points:</strong> Basic community services, NGO aid distribution.</li>
+        <li><strong>7+ points:</strong> Standard access — banking (savings accounts), healthcare registration, education enrollment.</li>
+        <li><strong>10+ points:</strong> Enhanced access — land registration, insurance, microfinance loans.</li>
+        <li><strong>15+ points:</strong> Full integration — eligible for national ID application, full KYC-compliant banking.</li>
+      </ul>
+      <p>Thresholds are configurable per country to align with local regulations and institutional requirements.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="institution types bank hospital ngo education insurance webhook">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Supported institution types</span>
+      <span class="kb-article-tag">Institutions</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI sends scoped webhook notifications tailored to each institution type:</p>
+      <ul>
+        <li><strong>Banks:</strong> KYC status, credit eligibility, score threshold crossings.</li>
+        <li><strong>Hospitals:</strong> Emergency identity verification, healthcare eligibility.</li>
+        <li><strong>NGOs:</strong> Aid distribution eligibility, beneficiary verification.</li>
+        <li><strong>Education:</strong> Student identity verification, enrollment eligibility.</li>
+        <li><strong>Insurance:</strong> Policy eligibility, identity confidence for underwriting.</li>
+        <li><strong>Microfinance:</strong> Small loan eligibility, community trust metrics.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="emergency hospital lookup medical urgent">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Emergency identity lookup</span>
+      <span class="kb-article-tag">Emergency</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Hospitals can perform expedited identity verification for medical emergencies:</p>
+      <p><span class="endpoint"><span class="method">POST</span> /gov/v1/emergency-lookup</span></p>
+      <p>This endpoint bypasses normal rate limits for urgent situations. It returns basic identity confirmation and any registered medical flags, without exposing full personal data. All emergency lookups are logged and auditable.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="statistics aggregate country stats enrollment">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Country statistics</span>
+      <span class="kb-article-tag">Stats</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Aggregate, anonymized statistics per country are available at:</p>
+      <p><span class="endpoint"><span class="method">GET</span> /gov/v1/stats/{country}</span></p>
+      <p>Returns total enrollments, active agents, attestation counts, average confidence scores, and threshold distribution — no PII is included. Useful for government reporting and program evaluation.</p>
+    </div></div>
+  </div>
+</div>
+
+<div class="kb-section" data-section="technical">
+  <div class="kb-section-header">
+    <i class="fa-solid fa-server"></i>
+    <h2>Technical Architecture</h2>
+  </div>
+
+  <div class="kb-article" data-tags="architecture stack flutter firebase cloud run fastapi">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Tech stack overview</span>
+      <span class="kb-article-tag">Architecture</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <ul>
+        <li><strong>Mobile/Web app:</strong> Flutter 3.x (Dart) — single codebase for Android, iOS, and Web.</li>
+        <li><strong>State management:</strong> Riverpod with GoRouter for navigation.</li>
+        <li><strong>Local database:</strong> SQLite (sqflite) for offline-first operation.</li>
+        <li><strong>Cloud database:</strong> Cloud Firestore (asia-southeast1) — append-only, multi-tenant by country.</li>
+        <li><strong>Authentication:</strong> Firebase Auth with custom claims for RBAC.</li>
+        <li><strong>Backend API:</strong> FastAPI (Python) on Google Cloud Run.</li>
+        <li><strong>AI/ML:</strong> Google MLKit (face detection), Gemini/Claude/GPT-4o (fraud review).</li>
+        <li><strong>NFC:</strong> nfc_manager package (NTAG215/216).</li>
+        <li><strong>Biometrics:</strong> local_auth (fingerprint/Face ID).</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="offline sqlite sync queue firestore connectivity">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Offline-first sync architecture</span>
+      <span class="kb-article-tag">Sync</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>Every write operation goes to <strong>SQLite first</strong>, then queues for Firestore sync. The sync service:</p>
+      <ul>
+        <li>Monitors connectivity via <code>connectivity_plus</code>.</li>
+        <li>Automatically triggers sync when the device comes online.</li>
+        <li>Uses exponential backoff for failed syncs.</li>
+        <li>Maintains a sync queue with status tracking per record.</li>
+      </ul>
+      <p>This ensures zero data loss — even if the device is offline for days, all records will sync when connectivity returns.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="multi-tenant country namespace firestore structure">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Multi-tenant country namespacing</span>
+      <span class="kb-article-tag">Multi-tenant</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>All Firestore data is namespaced by country code: <code>/{country}/{collection}/{docId}</code></p>
+      <p>Supported namespaces: <code>ph</code> (Philippines), <code>pg</code> (PNG), <code>tl</code> (Timor-Leste), <code>sb</code> (Solomon Islands), <code>vu</code> (Vanuatu), <code>fj</code> (Fiji), <code>id</code> (Indonesia).</p>
+      <p>This ensures complete data isolation between countries while sharing the same infrastructure and codebase.</p>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="deployment cloud run firebase hosting build apk web">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Deployment and infrastructure</span>
+      <span class="kb-article-tag">Deploy</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <ul>
+        <li><strong>Backend:</strong> FastAPI on Google Cloud Run (asia-southeast1), auto-scaled 0–5 instances, 512MB memory.</li>
+        <li><strong>Web app:</strong> Flutter web build deployed to Firebase Hosting.</li>
+        <li><strong>Android:</strong> APK built with <code>flutter build apk --release</code>.</li>
+        <li><strong>CI/CD:</strong> Cloud Build via <code>cloudbuild.yaml</code>.</li>
+        <li><strong>Estimated cost:</strong> $160–365/month at 1M users (conservative $350–500/month including all services).</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="kb-article" data-tags="cost budget firebase cloud run pricing estimate">
+    <div class="kb-article-header">
+      <i class="fa-solid fa-chevron-right chevron"></i>
+      <span class="kb-article-title">Cost and budget management</span>
+      <span class="kb-article-tag">Cost</span>
+    </div>
+    <div class="kb-article-body"><div class="kb-article-content">
+      <p>PCRCI is designed to be extremely cost-efficient:</p>
+      <ul>
+        <li><strong>Firestore:</strong> ~$81/month reads + ~$97/month writes at 1M users.</li>
+        <li><strong>Cloud Run:</strong> $30–80/month typical (auto-scales to zero when idle).</li>
+        <li><strong>Cloud Storage:</strong> $0.26–1/month for ID photos and documents.</li>
+        <li><strong>Firebase Hosting:</strong> Free tier covers web app.</li>
+      </ul>
+      <p>Budget alerts are configured at $50, $100, and $200 thresholds. Cost per enrolled subject is <strong>under $2</strong>.</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- Footer -->
+<footer class="kb-footer">
+  <p>PCRCI Knowledge Base — <a href="identity-in-motion.html">rifftlo.com</a></p>
+  <p style="margin-top:6px">Built by Rifftlo Inc. (Delaware, USA)</p>
+</footer>
+
+<script>
+/* ============================================================
+   KNOWLEDGE BASE — search, accordion, category nav
+   ============================================================ */
+(function() {
+  const searchInput = document.getElementById('kbSearch');
+  const catGrid     = document.getElementById('kbCategories');
+  const sections    = document.querySelectorAll('.kb-section');
+  const noResults   = document.getElementById('kbNoResults');
+  const articles    = document.querySelectorAll('.kb-article');
+
+  // Accordion toggle
+  articles.forEach(a => {
+    a.querySelector('.kb-article-header').addEventListener('click', () => {
+      a.classList.toggle('open');
+    });
+  });
+
+  // Category card click → scroll to section
+  document.querySelectorAll('.kb-cat-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.section;
+      const sec = document.querySelector(`.kb-section[data-section="${id}"]`);
+      if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Search
+  searchInput.addEventListener('input', () => {
+    const q = searchInput.value.trim().toLowerCase();
+    let anyVisible = false;
+
+    if (!q) {
+      // Show everything
+      catGrid.style.display = '';
+      sections.forEach(s => s.style.display = '');
+      articles.forEach(a => a.style.display = '');
+      noResults.style.display = 'none';
+      return;
+    }
+
+    // Hide category cards when searching
+    catGrid.style.display = 'none';
+
+    sections.forEach(sec => {
+      let sectionHasMatch = false;
+      sec.querySelectorAll('.kb-article').forEach(a => {
+        const title = a.querySelector('.kb-article-title').textContent.toLowerCase();
+        const tags  = (a.dataset.tags || '').toLowerCase();
+        const body  = a.querySelector('.kb-article-content').textContent.toLowerCase();
+        const match = title.includes(q) || tags.includes(q) || body.includes(q);
+        a.style.display = match ? '' : 'none';
+        if (match) { sectionHasMatch = true; anyVisible = true; }
+      });
+      sec.style.display = sectionHasMatch ? '' : 'none';
+    });
+
+    noResults.style.display = anyVisible ? 'none' : 'block';
+  });
+})();
+</script>
+</body>
+</html>

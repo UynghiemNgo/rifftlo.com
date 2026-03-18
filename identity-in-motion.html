@@ -1492,6 +1492,7 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 
 <!-- Fixed auth bar — always visible -->
 <div class="auth-bar" id="authBar">
+  <div id="google_translate_element"></div>
   <a class="auth-bar-btn" href="ai-knowledge-base.html" style="text-decoration:none">Knowledge Base</a>
   <span class="auth-bar-user" id="authUser" style="display:none"></span>
   <button class="auth-bar-btn" id="authLoginBtn">Sign In</button>
@@ -2168,5 +2169,39 @@ new SlidePresentation();
   });
 })();
 </script>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,tl,ceb,ilo,war,pam,bik,hil,pag,id,pt,bi,fj,fr,es,zh-CN,hi,ar,ja,ko,de,ru',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+/* Google Translate widget overrides */
+#google_translate_element { display: inline-block; }
+#google_translate_element select {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  background: var(--bar-bg);
+  color: var(--accent);
+  border: 1px solid var(--accent-dim);
+  border-radius: 4px;
+  padding: 5px 8px;
+  cursor: pointer;
+  outline: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+#google_translate_element .goog-te-gadget { font-size: 0; color: transparent; }
+#google_translate_element .goog-te-gadget span { display: none; }
+.goog-te-banner-frame { display: none !important; }
+body { top: 0 !important; }
+.skiptranslate { display: none !important; }
+#google_translate_element .goog-te-gadget .goog-te-combo { margin: 0; }
+</style>
 </body>
 </html>

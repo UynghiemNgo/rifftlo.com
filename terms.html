@@ -41,7 +41,10 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
 <header class="legal-topbar">
   <a class="legal-logo" href="identity-in-motion.html"><em>rifftlo</em><span>.com</span></a>
-  <a class="legal-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div id="google_translate_element"></div>
+    <a class="legal-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+  </div>
 </header>
 
 <div class="legal-wrap">
@@ -163,5 +166,24 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 <footer class="legal-footer">
   <p>&copy; 2026 Rifftlo Inc. All rights reserved. &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="identity-in-motion.html">Home</a></p>
 </footer>
+
+<script>
+function googleTranslateElementInit(){
+  new google.translate.TranslateElement({
+    pageLanguage:'en',
+    includedLanguages:'en,tl,ceb,ilo,war,pam,bik,hil,pag,id,pt,bi,fj,fr,es,zh-CN,hi,ar,ja,ko,de,ru',
+    layout:google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay:false
+  },'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+#google_translate_element select{background:rgba(13,18,25,0.6);color:var(--text-sec);border:1px solid var(--sep);border-radius:4px;padding:3px 6px;font-size:0.72rem;font-family:var(--font-body)}
+.goog-te-gadget{font-size:0!important;color:transparent!important}
+.goog-te-gadget span{display:none}
+.goog-te-banner-frame{display:none!important}
+body{top:0!important}
+</style>
 </body>
 </html>

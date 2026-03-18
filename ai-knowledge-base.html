@@ -363,7 +363,10 @@ body {
 <!-- Top bar -->
 <header class="kb-topbar">
   <a class="kb-logo" href="identity-in-motion.html"><em>rifftlo</em><span>.com</span></a>
-  <a class="kb-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Presentation</a>
+  <div style="display:flex;align-items:center;gap:12px">
+    <div id="google_translate_element"></div>
+    <a class="kb-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Presentation</a>
+  </div>
 </header>
 
 <!-- Hero -->
@@ -1136,5 +1139,25 @@ body {
   });
 })();
 </script>
+<script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'en',
+    includedLanguages: 'en,tl,ceb,ilo,war,pam,bik,hil,pag,id,pt,bi,fj,fr,es,zh-CN,hi,ar,ja,ko,de,ru',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: false
+  }, 'google_translate_element');
+}
+</script>
+<script src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<style>
+#google_translate_element select{font-family:'Jost',sans-serif;font-size:0.72rem;background:rgba(13,18,25,0.6);color:#7eb8f0;border:1px solid rgba(99,149,210,0.38);border-radius:4px;padding:5px 8px;cursor:pointer;outline:none}
+#google_translate_element .goog-te-gadget{font-size:0;color:transparent}
+#google_translate_element .goog-te-gadget span{display:none}
+.goog-te-banner-frame{display:none!important}
+body{top:0!important}
+.skiptranslate{display:none!important}
+#google_translate_element .goog-te-gadget .goog-te-combo{margin:0}
+</style>
 </body>
 </html>

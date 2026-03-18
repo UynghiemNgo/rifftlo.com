@@ -31,8 +31,8 @@
   --bg-alt:       #0a1018;
   --bg-panel:     #0c1520;
   --text:         #d4e2f2;
-  --text-sec:     rgba(195,215,240,0.52);
-  --text-muted:   rgba(195,215,240,0.26);
+  --text-sec:     rgba(195,215,240,0.72);
+  --text-muted:   rgba(195,215,240,0.50);
   --accent:       #7eb8f0;
   --accent-dim:   rgba(99,149,210,0.38);
   --accent-glow:  rgba(126,184,240,0.14);
@@ -53,9 +53,9 @@ html.light {
   --bg-alt:       #ede7db;
   --bg-panel:     #faf7f2;
   --text:         #2a2520;
-  --text-sec:     rgba(60,50,40,0.6);
-  --text-muted:   rgba(60,50,40,0.3);
-  --accent:       #8b6914;
+  --text-sec:     rgba(60,50,40,0.74);
+  --text-muted:   rgba(60,50,40,0.52);
+  --accent:       #7a5b0e;
   --accent-dim:   rgba(139,105,20,0.3);
   --accent-glow:  rgba(180,140,40,0.12);
   --sep:          rgba(139,105,20,0.18);
@@ -222,9 +222,48 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.2s  !important;
+    animation: none !important;
+    transition-duration: 0.01ms !important;
   }
+}
+
+/* Accessibility — focus indicators */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Skip navigation link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: auto;
+  z-index: 9999;
+  background: var(--bg);
+  color: var(--accent);
+  padding: 8px 16px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  text-decoration: none;
+  border: 2px solid var(--accent);
+  border-radius: 4px;
+}
+.skip-link:focus {
+  left: 10px;
+  top: 10px;
+}
+
+/* Visually hidden but accessible to screen readers */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+  white-space: nowrap;
+  border: 0;
 }
 
 /* ============================================================
@@ -256,17 +295,28 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 }
 
 .nav-dot {
-  width: 6px; height: 6px;
+  width: 24px; height: 24px;
   border-radius: 50%;
-  background: var(--sep);
+  background: transparent;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   padding: 0;
+  position: relative;
 }
-.nav-dot.active {
+.nav-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--sep);
+  transition: all 0.3s ease;
+}
+.nav-dot.active::after {
   background: var(--accent);
-  transform: scale(1.5);
+  transform: translate(-50%,-50%) scale(1.5);
 }
 
 /* Slide meta — number + label (top of every content slide) */
@@ -1484,10 +1534,12 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 </head>
 <body>
 
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <!-- Theme toggle -->
 <button class="theme-toggle" id="themeToggle" aria-label="Toggle light/dark mode">
-  <i class="fa-solid fa-sun icon-sun"></i>
-  <i class="fa-solid fa-moon icon-moon"></i>
+  <i class="fa-solid fa-sun icon-sun" aria-hidden="true"></i>
+  <i class="fa-solid fa-moon icon-moon" aria-hidden="true"></i>
 </button>
 
 <!-- Fixed auth bar — always visible -->
@@ -1500,17 +1552,19 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 </div>
 
 <!-- Login modal -->
-<div class="login-modal-overlay" id="loginModal">
+<div class="login-modal-overlay" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
   <div class="login-modal">
-    <button class="login-modal-close" id="loginModalClose">&times;</button>
-    <div class="gate-icon" style="text-align:center"><i class="fa-solid fa-lock"></i></div>
-    <h3 id="modalTitle" style="font-family:var(--font-display);font-size:1.4rem;font-weight:300;font-style:italic;color:var(--text);text-align:center;margin:0.8rem 0 0.4rem">Sign In</h3>
+    <button class="login-modal-close" id="loginModalClose" aria-label="Close sign-in dialog">&times;</button>
+    <div class="gate-icon" style="text-align:center"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
+    <h2 id="modalTitle" style="font-family:var(--font-display);font-size:1.4rem;font-weight:300;font-style:italic;color:var(--text);text-align:center;margin:0.8rem 0 0.4rem">Sign In</h2>
     <p id="modalSubtitle" style="font-family:var(--font-body);font-size:0.85rem;color:var(--text-sec);text-align:center;margin-bottom:1.2rem;font-weight:300">Sign in to access the PCRCI demo.</p>
     <form class="gate-form" id="modalForm">
-      <input class="gate-input" id="modalEmail" type="email" placeholder="your@email.com" required autocomplete="email" />
-      <input class="gate-input" id="modalPassword" type="password" placeholder="Password" required autocomplete="current-password" minlength="6" />
+      <label for="modalEmail" class="visually-hidden">Email address</label>
+      <input class="gate-input" id="modalEmail" type="email" placeholder="your@email.com" required autocomplete="email" aria-describedby="modalError" />
+      <label for="modalPassword" class="visually-hidden">Password</label>
+      <input class="gate-input" id="modalPassword" type="password" placeholder="Password" required autocomplete="current-password" minlength="6" aria-describedby="modalError" />
       <button class="gate-submit" type="submit" id="modalSubmit">Sign In &rarr;</button>
-      <div class="gate-error" id="modalError"></div>
+      <div class="gate-error" id="modalError" role="alert" aria-live="assertive"></div>
       <button type="button" class="gate-toggle" id="modalToggle">Don't have an account? Sign up</button>
     </form>
   </div>
@@ -1525,15 +1579,18 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
 <!-- ============================================================
      SLIDE 1 — COVER
      ============================================================ -->
+<main id="main-content">
 <section class="slide slide-cover" data-label="Cover">
   <div class="cover-left">
     <div class="cover-top-meta reveal d1">
-      <div class="cover-dot"></div>
+      <div class="cover-dot" aria-hidden="true"></div>
       <span class="cover-meta-text">Pre-Civil Registration Infrastructure</span>
     </div>
     <div class="cover-heading">
-      <div class="cover-h1-a reveal d2">Identity</div>
-      <div class="cover-h1-b reveal d3">in Motion</div>
+      <h1 class="reveal d2" style="margin:0;padding:0;border:none;background:none">
+        <span class="cover-h1-a">Identity</span>
+        <span class="cover-h1-b">in Motion</span>
+      </h1>
       <div class="cover-divider reveal d4">
         <div class="cover-divider-line"></div>
         <span class="cover-divider-text">rifftlo.com</span>
@@ -1568,25 +1625,25 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     <p class="slide-intro reveal d3">Without identity, people cannot access:</p>
     <div class="journey-flow">
       <div class="journey-node reveal d4">
-        <div class="journey-icon-wrap"><i class="fa-solid fa-building-columns"></i></div>
+        <div class="journey-icon-wrap"><i class="fa-solid fa-building-columns" aria-hidden="true"></i></div>
         <span class="journey-label">Banking</span>
         <p class="journey-desc">No accounts, no credit, no participation</p>
       </div>
       <div class="journey-conn reveal d4"></div>
       <div class="journey-node reveal d5">
-        <div class="journey-icon-wrap"><i class="fa-solid fa-house"></i></div>
+        <div class="journey-icon-wrap"><i class="fa-solid fa-house" aria-hidden="true"></i></div>
         <span class="journey-label">Land Rights</span>
         <p class="journey-desc">No legal claim to home or inheritance</p>
       </div>
       <div class="journey-conn reveal d5"></div>
       <div class="journey-node reveal d6">
-        <div class="journey-icon-wrap"><i class="fa-solid fa-heart-pulse"></i></div>
+        <div class="journey-icon-wrap"><i class="fa-solid fa-heart-pulse" aria-hidden="true"></i></div>
         <span class="journey-label">Healthcare</span>
         <p class="journey-desc">No access to health or social protection</p>
       </div>
       <div class="journey-conn reveal d6"></div>
       <div class="journey-node reveal d7">
-        <div class="journey-icon-wrap"><i class="fa-solid fa-landmark"></i></div>
+        <div class="journey-icon-wrap"><i class="fa-solid fa-landmark" aria-hidden="true"></i></div>
         <span class="journey-label">Government</span>
         <p class="journey-desc">Excluded from aid and development programs</p>
       </div>
@@ -1668,19 +1725,19 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     <h2 class="reveal d2">Why communities<br><em>resist formal registration</em></h2>
     <div class="fears-grid">
       <div class="fear-card reveal d3">
-        <div class="card-icon"><i class="fa-solid fa-user-minus"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-user-minus" aria-hidden="true"></i></div>
         <div class="fear-num">01</div>
         <div class="fear-title">Misidentification</div>
         <p class="fear-desc">Incorrect names, dates, and relationships recorded permanently into systems that are hard to correct.</p>
       </div>
       <div class="fear-card reveal d4">
-        <div class="card-icon"><i class="fa-solid fa-unlock"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-unlock" aria-hidden="true"></i></div>
         <div class="fear-num">02</div>
         <div class="fear-title">Loss of Control</div>
         <p class="fear-desc">Data misuse, identity theft, and exploitation by state or corporate actors after registration.</p>
       </div>
       <div class="fear-card reveal d5">
-        <div class="card-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i></div>
         <div class="fear-num">03</div>
         <div class="fear-title">Institutional Mistrust</div>
         <p class="fear-desc">Historical negative experiences with government programs, colonial records, and external organisations.</p>
@@ -1730,15 +1787,15 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     </svg>
 
     <!-- Central node: the individual being identified -->
-    <div class="net-node central" style="left:50%;top:50%"><i class="fa-solid fa-person"></i></div>
+    <div class="net-node central" style="left:50%;top:50%"><i class="fa-solid fa-person" aria-hidden="true"></i></div>
 
     <!-- Satellite nodes: community attesters -->
-    <div class="net-node" style="left:50%;top:14%"><i class="fa-solid fa-user"></i></div>
-    <div class="net-node" style="left:82%;top:29%"><i class="fa-solid fa-user"></i></div>
-    <div class="net-node" style="left:84%;top:68%"><i class="fa-solid fa-user"></i></div>
-    <div class="net-node" style="left:50%;top:86%"><i class="fa-solid fa-user"></i></div>
-    <div class="net-node" style="left:16%;top:68%"><i class="fa-solid fa-user"></i></div>
-    <div class="net-node" style="left:18%;top:29%"><i class="fa-solid fa-user"></i></div>
+    <div class="net-node" style="left:50%;top:14%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+    <div class="net-node" style="left:82%;top:29%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+    <div class="net-node" style="left:84%;top:68%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+    <div class="net-node" style="left:50%;top:86%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+    <div class="net-node" style="left:16%;top:68%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
+    <div class="net-node" style="left:18%;top:29%"><i class="fa-solid fa-user" aria-hidden="true"></i></div>
 
     <!-- Labels -->
     <div class="net-label" style="left:50%;top:5%">Neighbour</div>
@@ -1763,37 +1820,37 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     <h2 class="reveal d2">Six steps from <em>presence to inclusion</em></h2>
     <div class="pipeline-grid">
       <div class="pipeline-step reveal d3">
-        <div class="card-icon"><i class="fa-solid fa-person"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-person" aria-hidden="true"></i></div>
         <span class="step-num">Step 01</span>
         <div class="step-name">Human Presence</div>
         <p class="step-desc">The person comes first, before any document or credential.</p>
       </div>
       <div class="pipeline-step reveal d4">
-        <div class="card-icon"><i class="fa-solid fa-fingerprint"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-fingerprint" aria-hidden="true"></i></div>
         <span class="step-num">Step 02</span>
         <div class="step-name">Biometric &amp; Voice Capture</div>
         <p class="step-desc">Offline, non-invasive, held with full consent by the individual.</p>
       </div>
       <div class="pipeline-step reveal d5">
-        <div class="card-icon"><i class="fa-solid fa-people-group"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-people-group" aria-hidden="true"></i></div>
         <span class="step-num">Step 03</span>
         <div class="step-name">Community Attestation</div>
         <p class="step-desc">Social recognition is converted into verifiable, signed evidence.</p>
       </div>
       <div class="pipeline-step reveal d6">
-        <div class="card-icon"><i class="fa-solid fa-chart-bar"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-chart-bar" aria-hidden="true"></i></div>
         <span class="step-num">Step 04</span>
         <div class="step-name">Identity Confidence Score</div>
         <p class="step-desc">Trust is measured and weighted — not assumed or imposed.</p>
       </div>
       <div class="pipeline-step reveal d7">
-        <div class="card-icon"><i class="fa-solid fa-door-open"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-door-open" aria-hidden="true"></i></div>
         <span class="step-num">Step 05</span>
         <div class="step-name">Institutional Recognition</div>
         <p class="step-desc">The first door opens — banking, healthcare, land registration.</p>
       </div>
       <div class="pipeline-step reveal d8">
-        <div class="card-icon"><i class="fa-solid fa-id-card"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-id-card" aria-hidden="true"></i></div>
         <span class="step-num">Step 06</span>
         <div class="step-name">National ID Integration</div>
         <p class="step-desc">The transition to formal systems becomes seamless and invisible.</p>
@@ -1815,22 +1872,22 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     <h2 class="reveal d2"><em>Identity belongs</em><br>to the individual</h2>
     <div class="sovereign-grid">
       <div class="sovereign-card reveal d3">
-        <div class="card-icon"><i class="fa-solid fa-key"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-key" aria-hidden="true"></i></div>
         <div class="sovereign-title">Issued but held</div>
         <p class="sovereign-body">Credentials are issued by trusted authorities but held by the user — not stored in a central repository owned by an institution.</p>
       </div>
       <div class="sovereign-card reveal d4">
-        <div class="card-icon"><i class="fa-solid fa-hand"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-hand" aria-hidden="true"></i></div>
         <div class="sovereign-title">User-controlled sharing</div>
         <p class="sovereign-body">Users decide when, how, and with whom they share their identity. Consent is not a formality — it is architecture.</p>
       </div>
       <div class="sovereign-card reveal d5">
-        <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-microchip" aria-hidden="true"></i></div>
         <div class="sovereign-title">Technology as record</div>
         <p class="sovereign-body">Technology records and strengthens trust. It does not create trust, and it must not replace it.</p>
       </div>
       <div class="sovereign-card reveal d6">
-        <div class="card-icon"><i class="fa-solid fa-handshake"></i></div>
+        <div class="card-icon"><i class="fa-solid fa-handshake" aria-hidden="true"></i></div>
         <div class="sovereign-title">Human trust first</div>
         <p class="sovereign-body">The system begins and ends with human relationships. The pipeline is a bridge — community is the foundation.</p>
       </div>
@@ -1850,15 +1907,15 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     </div>
     <h2 class="demo-heading reveal d2">Live Demo — <em>PCRCI Prototype</em></h2>
     <a class="demo-fullscreen-btn reveal d3" href="pcrci_prototype.html" target="_blank" rel="noopener">
-      <i class="fa-solid fa-up-right-from-square"></i> View Fullscreen
+      <i class="fa-solid fa-up-right-from-square" aria-hidden="true"></i> View Fullscreen
     </a>
   </div>
   <div class="demo-frame-wrap">
     <!-- Auth gate — unlocked when signed in -->
-    <div class="demo-gate" id="demoGate">
+    <div class="demo-gate" id="demoGate" role="alert">
       <div class="gate-card">
-        <div class="gate-icon"><i class="fa-solid fa-lock"></i></div>
-        <h3>Sign in to Access Demo</h3>
+        <div class="gate-icon"><i class="fa-solid fa-lock" aria-hidden="true"></i></div>
+        <p><strong>Sign in to Access Demo</strong></p>
         <p>Use the Sign In button at the top of the page to unlock the prototype.</p>
       </div>
     </div>
@@ -1893,7 +1950,7 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     </p>
     <div class="conclusion-domain reveal d4">rifftlo.com</div>
     <a class="contact-btn reveal d5" href="mailto:uynghiem@omtse.com">
-      <i class="fa-solid fa-envelope"></i>
+      <i class="fa-solid fa-envelope" aria-hidden="true"></i>
       Contact us to learn more — uynghiem@omtse.com
     </a>
     <div class="reveal d6" style="margin-top:auto;display:flex;gap:16px;font-family:var(--font-body);font-size:clamp(0.6rem,0.9vw,0.72rem)">
@@ -1903,6 +1960,7 @@ html.light .theme-toggle .icon-moon { opacity: 1; transform: rotate(0deg); }
     </div>
   </div>
 </section>
+</main>
 
 <script>
 /* ============================================================
@@ -2002,6 +2060,9 @@ class SlidePresentation {
   /* --- Keyboard --- */
   setupKeyboard() {
     document.addEventListener('keydown', e => {
+      // Don't intercept keys when user is in a form field or interactive element
+      const tag = document.activeElement.tagName;
+      if (['INPUT','TEXTAREA','SELECT','BUTTON','A'].includes(tag)) return;
       switch(e.key) {
         case 'ArrowDown': case 'ArrowRight': case ' ':
           e.preventDefault(); this.next(); break;
@@ -2070,10 +2131,21 @@ new SlidePresentation();
 
   let isSignUp = false;
 
-  // Open / close modal
-  loginBtn.addEventListener('click', () => { modal.classList.add('open'); });
-  modalClose.addEventListener('click', () => { modal.classList.remove('open'); });
-  modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+  // Open / close modal with focus management
+  function openModal() {
+    modal.classList.add('open');
+    modalEmail.focus();
+  }
+  function closeModal() {
+    modal.classList.remove('open');
+    loginBtn.focus();
+  }
+  loginBtn.addEventListener('click', openModal);
+  modalClose.addEventListener('click', closeModal);
+  modal.addEventListener('click', e => { if (e.target === modal) closeModal(); });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+  });
 
   // Toggle sign-in / sign-up
   modalToggle.addEventListener('click', () => {

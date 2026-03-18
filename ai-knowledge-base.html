@@ -13,8 +13,8 @@
   --bg-alt:     #0a1018;
   --bg-panel:   #0c1520;
   --text:       #d4e2f2;
-  --text-sec:   rgba(195,215,240,0.52);
-  --text-muted: rgba(195,215,240,0.26);
+  --text-sec:   rgba(195,215,240,0.72);
+  --text-muted: rgba(195,215,240,0.50);
   --accent:     #7eb8f0;
   --accent-dim: rgba(99,149,210,0.38);
   --accent-glow:rgba(126,184,240,0.14);
@@ -356,20 +356,27 @@ body {
   .kb-categories { grid-template-columns: 1fr; }
   .kb-topbar { flex-wrap: wrap; }
 }
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip-link{position:absolute;left:-9999px;top:auto;z-index:9999;background:var(--bg);color:var(--accent);padding:8px 16px;font-family:var(--font-body);font-size:0.85rem;text-decoration:none;border:2px solid var(--accent);border-radius:4px}
+.skip-link:focus{left:10px;top:10px}
+.visually-hidden{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 </style>
 </head>
 <body>
+
+<a href="#main-content" class="skip-link">Skip to main content</a>
 
 <!-- Top bar -->
 <header class="kb-topbar">
   <a class="kb-logo" href="identity-in-motion.html"><em>rifftlo</em><span>.com</span></a>
   <div style="display:flex;align-items:center;gap:12px">
     <div id="google_translate_element"></div>
-    <a class="kb-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Presentation</a>
+    <a class="kb-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Presentation</a>
   </div>
 </header>
 
 <!-- Hero -->
+<main id="main-content">
 <div class="kb-hero">
   <h1>PCRCI <em>Knowledge Base</em></h1>
   <p>Everything you need to know about the Pre-Civil Registration Confidence Infrastructure.</p>
@@ -378,7 +385,8 @@ body {
 <!-- Search -->
 <div class="kb-search-wrap">
   <div class="kb-search-box">
-    <i class="fa-solid fa-magnifying-glass"></i>
+    <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+    <label for="kbSearch" class="visually-hidden">Search knowledge base</label>
     <input class="kb-search-input" id="kbSearch" type="text" placeholder="Search articles..." />
   </div>
   <p class="kb-search-hint">Try: attestation, NFC, API, fraud, enrollment</p>
@@ -386,38 +394,38 @@ body {
 
 <!-- Category cards (overview) -->
 <div class="kb-categories" id="kbCategories">
-  <div class="kb-cat-card" data-section="getting-started">
-    <div class="kb-cat-icon"><i class="fa-solid fa-rocket"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="getting-started">
+    <div class="kb-cat-icon"><i class="fa-solid fa-rocket" aria-hidden="true"></i></div>
     <h3>Getting Started</h3>
     <p>What is PCRCI, how it works, and who it serves.</p>
     <span class="kb-cat-count">6 articles</span>
   </div>
-  <div class="kb-cat-card" data-section="agents">
-    <div class="kb-cat-icon"><i class="fa-solid fa-id-badge"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="agents">
+    <div class="kb-cat-icon"><i class="fa-solid fa-id-badge" aria-hidden="true"></i></div>
     <h3>Agents &amp; Field Users</h3>
     <p>Agent login, enrollment, NFC cards, and attestation workflows.</p>
     <span class="kb-cat-count">7 articles</span>
   </div>
-  <div class="kb-cat-card" data-section="api">
-    <div class="kb-cat-icon"><i class="fa-solid fa-code"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="api">
+    <div class="kb-cat-icon"><i class="fa-solid fa-code" aria-hidden="true"></i></div>
     <h3>API &amp; Integration</h3>
     <p>REST endpoints, authentication, webhooks, and code examples.</p>
     <span class="kb-cat-count">8 articles</span>
   </div>
-  <div class="kb-cat-card" data-section="security">
-    <div class="kb-cat-icon"><i class="fa-solid fa-shield-halved"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="security">
+    <div class="kb-cat-icon"><i class="fa-solid fa-shield-halved" aria-hidden="true"></i></div>
     <h3>Security &amp; Privacy</h3>
     <p>Biometric hashing, fraud rules, audit trails, and compliance.</p>
     <span class="kb-cat-count">5 articles</span>
   </div>
-  <div class="kb-cat-card" data-section="gov">
-    <div class="kb-cat-icon"><i class="fa-solid fa-landmark"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="gov">
+    <div class="kb-cat-icon"><i class="fa-solid fa-landmark" aria-hidden="true"></i></div>
     <h3>Government &amp; Institutions</h3>
     <p>KYC verification, confidence scores, thresholds, and onboarding.</p>
     <span class="kb-cat-count">5 articles</span>
   </div>
-  <div class="kb-cat-card" data-section="technical">
-    <div class="kb-cat-icon"><i class="fa-solid fa-server"></i></div>
+  <div class="kb-cat-card" role="button" tabindex="0" data-section="technical">
+    <div class="kb-cat-icon"><i class="fa-solid fa-server" aria-hidden="true"></i></div>
     <h3>Technical Architecture</h3>
     <p>Offline-first design, database, sync, and deployment.</p>
     <span class="kb-cat-count">5 articles</span>
@@ -436,12 +444,12 @@ body {
 
 <div class="kb-section" data-section="getting-started">
   <div class="kb-section-header">
-    <i class="fa-solid fa-rocket"></i>
+    <i class="fa-solid fa-rocket" aria-hidden="true"></i>
     <h2>Getting Started</h2>
   </div>
 
   <div class="kb-article" data-tags="pcrci overview what is identity">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">What is PCRCI?</span>
       <span class="kb-article-tag">Overview</span>
@@ -454,7 +462,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="how it works flow pipeline steps">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">How does the pipeline work?</span>
       <span class="kb-article-tag">Overview</span>
@@ -473,7 +481,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="users roles agent attestor subject types">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">User types and roles</span>
       <span class="kb-article-tag">Roles</span>
@@ -490,7 +498,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="confidence score points threshold attestation weight">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">How confidence scores work</span>
       <span class="kb-article-tag">Scoring</span>
@@ -498,7 +506,7 @@ body {
     <div class="kb-article-body"><div class="kb-article-content">
       <p>Every subject starts with a confidence score of <strong>1</strong> (self-enrollment). Attestations from community members add points based on the attestor's relationship type:</p>
       <table>
-        <tr><th>Attestor Type</th><th>Weight</th></tr>
+        <tr><th scope="col">Attestor Type</th><th scope="col">Weight</th></tr>
         <tr><td>Community member</td><td>+1</td></tr>
         <tr><td>Family member</td><td>+2</td></tr>
         <tr><td>Tribe/clan leader</td><td>+3</td></tr>
@@ -508,7 +516,7 @@ body {
       </table>
       <p>Score thresholds unlock services:</p>
       <table>
-        <tr><th>Score</th><th>Access Level</th></tr>
+        <tr><th scope="col">Score</th><th scope="col">Access Level</th></tr>
         <tr><td>4+</td><td>Basic — community services, national ID application</td></tr>
         <tr><td>7+</td><td>Standard — banking, healthcare</td></tr>
         <tr><td>10+</td><td>Enhanced — land registration, insurance</td></tr>
@@ -518,7 +526,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="countries markets regions supported">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Supported countries and languages</span>
       <span class="kb-article-tag">Regions</span>
@@ -532,7 +540,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="did decentralized identifier format">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Decentralized Identifiers (DIDs)</span>
       <span class="kb-article-tag">Identity</span>
@@ -546,12 +554,12 @@ body {
 
 <div class="kb-section" data-section="agents">
   <div class="kb-section-header">
-    <i class="fa-solid fa-id-badge"></i>
+    <i class="fa-solid fa-id-badge" aria-hidden="true"></i>
     <h2>Agents &amp; Field Users</h2>
   </div>
 
   <div class="kb-article" data-tags="agent login biometric nfc badge authentication">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Agent login and authentication</span>
       <span class="kb-article-tag">Login</span>
@@ -567,7 +575,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="agent setup registration promo code id photo">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Agent setup and registration</span>
       <span class="kb-article-tag">Setup</span>
@@ -584,7 +592,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="enrollment steps subject name voice birthday location nfc">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Enrolling a subject (8-step flow)</span>
       <span class="kb-article-tag">Enrollment</span>
@@ -606,7 +614,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="attestation vouch community attestor register">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">How attestation works</span>
       <span class="kb-article-tag">Attestation</span>
@@ -619,7 +627,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="nfc card write replace lost damaged tap">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">NFC card operations</span>
       <span class="kb-article-tag">NFC</span>
@@ -636,7 +644,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="offline first sync sqlite queue connectivity">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Working offline</span>
       <span class="kb-article-tag">Offline</span>
@@ -648,7 +656,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="government kiosk access consent face verification">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Government kiosk and NFC access</span>
       <span class="kb-article-tag">Gov Access</span>
@@ -667,12 +675,12 @@ body {
 
 <div class="kb-section" data-section="api">
   <div class="kb-section-header">
-    <i class="fa-solid fa-code"></i>
+    <i class="fa-solid fa-code" aria-hidden="true"></i>
     <h2>API &amp; Integration</h2>
   </div>
 
   <div class="kb-article" data-tags="api overview rest json authentication key token">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">API overview and authentication</span>
       <span class="kb-article-tag">API</span>
@@ -688,7 +696,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="verify endpoint score did country lookup">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Verification endpoints</span>
       <span class="kb-article-tag">Endpoints</span>
@@ -704,7 +712,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="webhook events signature hmac notification">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Webhooks and real-time notifications</span>
       <span class="kb-article-tag">Webhooks</span>
@@ -716,7 +724,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="quickstart example python node curl code sample">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Quickstart code examples</span>
       <span class="kb-article-tag">Code</span>
@@ -733,7 +741,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="sandbox testing mock data development">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Sandbox and testing</span>
       <span class="kb-article-tag">Testing</span>
@@ -750,14 +758,14 @@ body {
   </div>
 
   <div class="kb-article" data-tags="error codes status 400 401 403 404 429 500">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Error codes reference</span>
       <span class="kb-article-tag">Errors</span>
     </div>
     <div class="kb-article-body"><div class="kb-article-content">
       <table>
-        <tr><th>Code</th><th>Meaning</th></tr>
+        <tr><th scope="col">Code</th><th scope="col">Meaning</th></tr>
         <tr><td><code>400</code></td><td>Bad request — invalid parameters or malformed body.</td></tr>
         <tr><td><code>401</code></td><td>Unauthorized — missing or invalid API key / token.</td></tr>
         <tr><td><code>403</code></td><td>Forbidden — valid credentials but insufficient permissions.</td></tr>
@@ -770,7 +778,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="soap xml wsdl cobol mainframe legacy integration">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Legacy system integration (SOAP, COBOL, ISO 20022)</span>
       <span class="kb-article-tag">Legacy</span>
@@ -788,7 +796,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="onboarding register api access self-service">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Self-service API onboarding</span>
       <span class="kb-article-tag">Onboarding</span>
@@ -804,12 +812,12 @@ body {
 
 <div class="kb-section" data-section="security">
   <div class="kb-section-header">
-    <i class="fa-solid fa-shield-halved"></i>
+    <i class="fa-solid fa-shield-halved" aria-hidden="true"></i>
     <h2>Security &amp; Privacy</h2>
   </div>
 
   <div class="kb-article" data-tags="biometric hash sha256 face fingerprint privacy no raw">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Biometric data handling</span>
       <span class="kb-article-tag">Privacy</span>
@@ -821,7 +829,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="fraud rules detection velocity geo gps nfc duplicate">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Fraud detection rules</span>
       <span class="kb-article-tag">Fraud</span>
@@ -829,7 +837,7 @@ body {
     <div class="kb-article-body"><div class="kb-article-content">
       <p>Six automated fraud rules protect the system:</p>
       <table>
-        <tr><th>Rule</th><th>Action</th></tr>
+        <tr><th scope="col">Rule</th><th scope="col">Action</th></tr>
         <tr><td>Attestor &gt; 20 attestations in 7 days</td><td>Auto-suspend attestor</td></tr>
         <tr><td>Attestor attests subject from same agent session</td><td>Block attestation</td></tr>
         <tr><td>Two biometric hashes &gt; 90% similar</td><td>Flag both subjects</td></tr>
@@ -841,7 +849,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="audit trail log immutable hash chain append only ledger">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Immutable audit trail</span>
       <span class="kb-article-tag">Audit</span>
@@ -854,7 +862,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="rbac roles permissions access control administrator">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Role-based access control (RBAC)</span>
       <span class="kb-article-tag">Access</span>
@@ -875,7 +883,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="compliance regulatory fatf eidas iso 27001 id4d">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Regulatory compliance</span>
       <span class="kb-article-tag">Compliance</span>
@@ -896,12 +904,12 @@ body {
 
 <div class="kb-section" data-section="gov">
   <div class="kb-section-header">
-    <i class="fa-solid fa-landmark"></i>
+    <i class="fa-solid fa-landmark" aria-hidden="true"></i>
     <h2>Government &amp; Institutions</h2>
   </div>
 
   <div class="kb-article" data-tags="kyc banking financial institution credit">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">KYC and financial institution access</span>
       <span class="kb-article-tag">Banking</span>
@@ -914,7 +922,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="threshold service level basic standard enhanced full access unlock">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Service thresholds and progressive access</span>
       <span class="kb-article-tag">Thresholds</span>
@@ -932,7 +940,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="institution types bank hospital ngo education insurance webhook">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Supported institution types</span>
       <span class="kb-article-tag">Institutions</span>
@@ -951,7 +959,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="emergency hospital lookup medical urgent">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Emergency identity lookup</span>
       <span class="kb-article-tag">Emergency</span>
@@ -964,7 +972,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="statistics aggregate country stats enrollment">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Country statistics</span>
       <span class="kb-article-tag">Stats</span>
@@ -979,12 +987,12 @@ body {
 
 <div class="kb-section" data-section="technical">
   <div class="kb-section-header">
-    <i class="fa-solid fa-server"></i>
+    <i class="fa-solid fa-server" aria-hidden="true"></i>
     <h2>Technical Architecture</h2>
   </div>
 
   <div class="kb-article" data-tags="architecture stack flutter firebase cloud run fastapi">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Tech stack overview</span>
       <span class="kb-article-tag">Architecture</span>
@@ -1005,7 +1013,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="offline sqlite sync queue firestore connectivity">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Offline-first sync architecture</span>
       <span class="kb-article-tag">Sync</span>
@@ -1023,7 +1031,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="multi-tenant country namespace firestore structure">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Multi-tenant country namespacing</span>
       <span class="kb-article-tag">Multi-tenant</span>
@@ -1036,7 +1044,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="deployment cloud run firebase hosting build apk web">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Deployment and infrastructure</span>
       <span class="kb-article-tag">Deploy</span>
@@ -1053,7 +1061,7 @@ body {
   </div>
 
   <div class="kb-article" data-tags="cost budget firebase cloud run pricing estimate">
-    <div class="kb-article-header">
+    <div class="kb-article-header" role="button" tabindex="0" aria-expanded="false">
       <i class="fa-solid fa-chevron-right chevron"></i>
       <span class="kb-article-title">Cost and budget management</span>
       <span class="kb-article-tag">Cost</span>
@@ -1070,6 +1078,7 @@ body {
     </div></div>
   </div>
 </div>
+</main>
 
 <!-- Footer -->
 <footer class="kb-footer">
@@ -1089,19 +1098,29 @@ body {
   const noResults   = document.getElementById('kbNoResults');
   const articles    = document.querySelectorAll('.kb-article');
 
-  // Accordion toggle
+  // Accordion toggle with aria-expanded
   articles.forEach(a => {
-    a.querySelector('.kb-article-header').addEventListener('click', () => {
+    const header = a.querySelector('.kb-article-header');
+    function toggleArticle() {
       a.classList.toggle('open');
+      header.setAttribute('aria-expanded', a.classList.contains('open'));
+    }
+    header.addEventListener('click', toggleArticle);
+    header.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleArticle(); }
     });
   });
 
-  // Category card click → scroll to section
+  // Category card click → scroll to section (keyboard accessible)
   document.querySelectorAll('.kb-cat-card').forEach(card => {
-    card.addEventListener('click', () => {
+    function activateCard() {
       const id = card.dataset.section;
       const sec = document.querySelector(`.kb-section[data-section="${id}"]`);
       if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    card.addEventListener('click', activateCard);
+    card.addEventListener('keydown', e => {
+      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activateCard(); }
     });
   });
 

@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300;1,6..72,400&family=Jost:wght@300;400;500&display=swap">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-:root{--bg:#0d1219;--bg-panel:#0c1520;--text:#d4e2f2;--text-sec:rgba(195,215,240,0.52);--text-muted:rgba(195,215,240,0.26);--accent:#7eb8f0;--accent-dim:rgba(99,149,210,0.38);--sep:rgba(99,149,210,0.22);--font-display:'Newsreader',serif;--font-body:'Jost',sans-serif}
+:root{--bg:#0d1219;--bg-panel:#0c1520;--text:#d4e2f2;--text-sec:rgba(195,215,240,0.72);--text-muted:rgba(195,215,240,0.50);--accent:#7eb8f0;--accent-dim:rgba(99,149,210,0.38);--sep:rgba(99,149,210,0.22);--font-display:'Newsreader',serif;--font-body:'Jost',sans-serif}
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100vh;line-height:1.7}
@@ -36,6 +36,9 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 .legal-nav a{font-size:0.78rem;color:var(--accent);text-decoration:none;border:1px solid var(--sep);padding:4px 12px;border-radius:4px;transition:background 0.2s,border-color 0.2s}
 .legal-nav a:hover{background:rgba(126,184,240,0.08);border-color:var(--accent-dim)}
 .legal-nav a.active{background:rgba(126,184,240,0.12);border-color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.skip-link{position:absolute;left:-9999px;top:auto;z-index:9999;background:var(--bg);color:var(--accent);padding:8px 16px;font-family:var(--font-body);font-size:0.85rem;text-decoration:none;border:2px solid var(--accent);border-radius:4px}
+.skip-link:focus{left:10px;top:10px}
 .data-table{width:100%;border-collapse:collapse;margin:0.8rem 0 1.2rem;font-size:clamp(0.78rem,0.95vw,0.88rem)}
 .data-table th{text-align:left;padding:8px 10px;border-bottom:1px solid var(--sep);color:var(--accent);font-weight:500;font-size:0.82em;letter-spacing:0.04em;text-transform:uppercase}
 .data-table td{padding:6px 10px;border-bottom:1px solid rgba(99,149,210,0.08);color:var(--text-sec);font-weight:300;vertical-align:top}
@@ -43,21 +46,23 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 </head>
 <body>
 
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
 <header class="legal-topbar">
   <a class="legal-logo" href="identity-in-motion.html"><em>rifftlo</em><span>.com</span></a>
   <div style="display:flex;align-items:center;gap:12px">
     <div id="google_translate_element"></div>
-    <a class="legal-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+    <a class="legal-back" href="identity-in-motion.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> Back to Home</a>
   </div>
 </header>
 
-<div class="legal-wrap">
+<main id="main-content" class="legal-wrap">
   <h1>Privacy <em>Policy</em></h1>
   <span class="legal-date">Effective Date: March 18, 2026 &middot; Last Updated: March 18, 2026</span>
 
   <div class="legal-nav">
     <a href="terms.html">Terms of Service</a>
-    <a class="active" href="privacy.html">Privacy Policy</a>
+    <a class="active" href="privacy.html" aria-current="page">Privacy Policy</a>
   </div>
 
   <p>Rifftlo Inc. ("Company," "we," "us," or "our") is committed to protecting the privacy of individuals who use the PCRCI Identity application ("App"), website (rifftlo.com), and related services ("Services"). This Privacy Policy describes what data we collect, how we use it, and your rights regarding your information.</p>
@@ -73,7 +78,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
   <h3>2.1 Subject Enrollment Data</h3>
   <table class="data-table">
-    <tr><th>Data Type</th><th>Required</th><th>Purpose</th><th>How Stored</th></tr>
+    <tr><th scope="col">Data Type</th><th scope="col">Required</th><th scope="col">Purpose</th><th scope="col">How Stored</th></tr>
     <tr><td><strong>Full name</strong></td><td>Yes</td><td>Identity record</td><td>Encrypted in Firestore</td></tr>
     <tr><td><strong>Estimated birth year / birthday</strong></td><td>Yes</td><td>Identity record</td><td>Encrypted in Firestore</td></tr>
     <tr><td><strong>Tribe / clan name</strong></td><td>Optional</td><td>Cultural identity context</td><td>Encrypted in Firestore</td></tr>
@@ -85,7 +90,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
   <h3>2.2 Agent Data</h3>
   <table class="data-table">
-    <tr><th>Data Type</th><th>Purpose</th><th>How Stored</th></tr>
+    <tr><th scope="col">Data Type</th><th scope="col">Purpose</th><th scope="col">How Stored</th></tr>
     <tr><td><strong>Government ID photo hash</strong></td><td>Agent verification</td><td>SHA-256 hash only</td></tr>
     <tr><td><strong>Registered GPS location</strong></td><td>Fraud geo-fencing</td><td>Encrypted in Firestore</td></tr>
     <tr><td><strong>NFC badge DID</strong></td><td>Agent authentication</td><td>Encrypted in Firestore</td></tr>
@@ -94,7 +99,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
   <h3>2.3 Attestor Data</h3>
   <table class="data-table">
-    <tr><th>Data Type</th><th>Purpose</th><th>How Stored</th></tr>
+    <tr><th scope="col">Data Type</th><th scope="col">Purpose</th><th scope="col">How Stored</th></tr>
     <tr><td><strong>Government ID type &amp; hash</strong></td><td>Attestor verification</td><td>SHA-256 hash only; raw ID never stored</td></tr>
     <tr><td><strong>Attestor type</strong></td><td>Attestation weighting</td><td>Encrypted in Firestore</td></tr>
     <tr><td><strong>Attestation count &amp; history</strong></td><td>Fraud detection velocity limits</td><td>Encrypted in Firestore</td></tr>
@@ -174,7 +179,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
   <h2>8. Third-Party Data Processors</h2>
   <table class="data-table">
-    <tr><th>Service</th><th>Provider</th><th>Data Processed</th><th>Processing Location</th></tr>
+    <tr><th scope="col">Service</th><th scope="col">Provider</th><th scope="col">Data Processed</th><th scope="col">Processing Location</th></tr>
     <tr><td><strong>Firebase Auth</strong></td><td>Google LLC</td><td>Email, password, auth tokens</td><td>Global</td></tr>
     <tr><td><strong>Cloud Firestore</strong></td><td>Google LLC</td><td>Identity records, attestations, activity logs</td><td>asia-southeast1</td></tr>
     <tr><td><strong>Cloud Run</strong></td><td>Google LLC</td><td>API requests, verification queries</td><td>asia-southeast1</td></tr>
@@ -185,7 +190,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
 
   <h2>9. Device Permissions</h2>
   <table class="data-table">
-    <tr><th>Permission</th><th>Purpose</th><th>Data Handling</th></tr>
+    <tr><th scope="col">Permission</th><th scope="col">Purpose</th><th scope="col">Data Handling</th></tr>
     <tr><td><strong>Camera</strong></td><td>Face capture for biometric hash</td><td>Image processed on-device, hashed (SHA-256), then immediately discarded</td></tr>
     <tr><td><strong>Biometric (Fingerprint / Face ID)</strong></td><td>Agent authentication</td><td>Processed by device OS; never accessed or stored by the App</td></tr>
     <tr><td><strong>Location (Fine &amp; Coarse)</strong></td><td>Fraud geo-fencing (agent within 500m of registered area)</td><td>Coordinates logged for fraud detection; not shared externally</td></tr>
@@ -254,7 +259,7 @@ body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-hei
   Email: <a href="mailto:support@rifftlo.com">support@rifftlo.com</a><br>
   Website: <a href="https://rifftlo.com">rifftlo.com</a></p>
   <p>If you are in the EEA and are unsatisfied with our response, you have the right to lodge a complaint with your local data protection supervisory authority.</p>
-</div>
+</main>
 
 <footer class="legal-footer">
   <p>&copy; 2026 Rifftlo Inc. All rights reserved. &middot; <a href="terms.html">Terms</a> &middot; <a href="privacy.html">Privacy</a> &middot; <a href="identity-in-motion.html">Home</a></p>
